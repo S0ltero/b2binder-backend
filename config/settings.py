@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     # Third party apps
     "corsheaders",
     "rest_framework",
+    "djoser",
 
     # Local apps
     "api",
@@ -56,10 +57,8 @@ USE_TZ = True
 TIME_ZONE = "Europe/Moscow"
 
 #Cors
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8080",
-]
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
 # Postgres
 DATABASES = {
@@ -74,6 +73,13 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'api.CustomUser'
+
+# RestFramework settings
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+    ),
+}
 
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = join(os.path.dirname(BASE_DIR), "static")
