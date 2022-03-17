@@ -34,7 +34,7 @@ class UserViewSet(DjoserUserViewSet):
 
 
 class ProjectViewSet(viewsets.GenericViewSet):
-    queryset = Project.objects.all()
+    queryset = Project
     serializer_class = ProjectsSerialiazer
 
     def get_serializer_class(self):
@@ -44,6 +44,37 @@ class ProjectViewSet(viewsets.GenericViewSet):
             return ProjectsSerialiazer
 
     def list(self, request, *args, **kwargs):
-        projects = self.queryset
+        projects = self.queryset.objects.all()
         serializer = self.serializer_class(projects, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk):
+        try:
+            project = self.queryset.objects.get(id=pk)
+        except Project.DoesNotExist:
+            return Response(f'Проект {pk} не найден', status=status.HTTP_404_NOT_FOUND)
+        serializer = self.serializer_class(project)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def update(self, request, *args, **kwargs):
+        pk = request.data['id']
+        try:
+            project = self.queryset.objects.get(id=pk)
+        except Project.DoesNotExist:
+            return Response(f'Проект {pk} не найден', status=status.HTTP_404_NOT_FOUND)
+        serializer = self.serializer_class(project, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=False):
+            serializer.update(project, serializer.validated_data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data['user'] = request.user.id
+
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid(raise_exception=False):
+            serializer.save(user_id=request.user.id)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
