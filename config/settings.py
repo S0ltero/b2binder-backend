@@ -1,6 +1,10 @@
 import os
 from os.path import join
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Application definition
 
@@ -16,6 +20,7 @@ INSTALLED_APPS = [
     "rest_framework",
 
     # Local apps
+    "api",
 ]
 
 MIDDLEWARE = [
@@ -59,6 +64,8 @@ DATABASES = {
         "PORT": os.getenv("DB_PORT"),
     }
 }
+
+AUTH_USER_MODEL = 'api.CustomUser'
 
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = join(os.path.dirname(BASE_DIR), "static")
