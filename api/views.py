@@ -14,11 +14,14 @@ from .serializers import (
     ProjectsSerialiazer,
     ProjectsCreateSerializer,
     ProjectsDetailSerializer,
+    UserSerializer,
+    UserCreateSerializer,
 )
 
 
 class UserViewSet(DjoserUserViewSet):
 
+    queryset = CustomUser.objects.all()
 
     @action(detail=False, url_name="me/likes/to", url_path="me/likes/to")
     def likes_to(self, request, *args, **kwargs):
@@ -26,12 +29,24 @@ class UserViewSet(DjoserUserViewSet):
         likes = instance.likes_to.all().select_related("like_to")
         return Response(status=status.HTTP_200_OK)
 
-
     @action(detail=False, url_name="me/likes/from", url_path="me/likes/from")
     def likes_from(self, request, *args, **kwargs):
         instance = self.request.user
         likes = instance.likes_from.all().select_related("like_from")
         return Response(status=status.HTTP_200_OK)
+
+    def list(self, request, *args, **kwargs):
+        try:
+            user = self.queryset
+        except CustomUser.DoesNotExist:
+            return Response(f'Пользователи не найдены', status=status.HTTP_404_NOT_FOUND)
+        serializer = self.serializer_class(user, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.serializer_class(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ProjectViewSet(viewsets.GenericViewSet):
@@ -52,7 +67,10 @@ class ProjectViewSet(viewsets.GenericViewSet):
         return super().get_permissions()
 
     def list(self, request, *args, **kwargs):
-        projects = self.queryset.objects.all()
+        try:
+            projects = self.queryset.objects.all()
+        except Project.DoesNotExist:
+            return Response(f'Проекты не найдены', status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(projects, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

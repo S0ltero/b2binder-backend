@@ -13,15 +13,14 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         exclude = ('password', 'last_login', 'groups',
-                   'user_permission', 'is_superuser',
-                   'is_active', 'is_staff', 'date_joined')
+                    'is_superuser', 'is_active', 'is_staff', 'date_joined')
 
 
 class UserCreateSerializer(DjoserUserCreateSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password', 're_password',
+        fields = ('username', 'email', 'password',
                   'photo', 'profile_type', 'city')
 
 
@@ -38,7 +37,7 @@ class ProjectsCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = '__all__'
+        exclude = ('user',)
 
 class ProjectsDetailSerializer(serializers.ModelSerializer):
 
