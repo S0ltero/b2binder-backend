@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     # Third party apps
     "corsheaders",
     "rest_framework",
+    "rest_framework.authtoken",
     "djoser",
 
     # Local apps
@@ -73,6 +74,23 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'api.CustomUser'
+
+# Djoser settings
+DJOSER = {
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    #"LOGIN_FIELD": "email",
+    #"SERIALIZERS": {
+        #"user": "account.serializers.UserSerializer",
+       # "user_create": "account.serializers.CreateUserSerializer",
+        #"user_create_password_retype": "account.serializers.CreateUserSerializer",
+        #"current_user": "account.serializers.UserSerializer",
+        #"token": "account.serializers.TokenSerializer"
+   # },
+    #"EMAIL": {
+        #'password_reset': 'account.email.PasswordResetEmail',
+    #}
+}
 
 # RestFramework settings
 REST_FRAMEWORK = {
