@@ -13,6 +13,7 @@ from .models import (
 from .serializers import (
     ProjectsSerialiazer,
     ProjectsCreateSerializer,
+    ProjectsDetailSerializer,
 )
 
 
@@ -38,10 +39,17 @@ class ProjectViewSet(viewsets.GenericViewSet):
     serializer_class = ProjectsSerialiazer
 
     def get_serializer_class(self):
-        if self.action == ['create', 'update']:
+        if self.action in ['create', 'update']:
             return ProjectsCreateSerializer
         else:
             return ProjectsSerialiazer
+
+    def get_permissions(self):
+        if action in ['update', 'create', 'destroy']:
+            self.permission_classes = [IsAuthenticated]
+        else:
+            self.permission_classes = [AllowAny]
+        return super().get_permissions()
 
     def list(self, request, *args, **kwargs):
         projects = self.queryset.objects.all()
@@ -56,15 +64,16 @@ class ProjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def update(self, request, *args, **kwargs):
-        pk = request.data['id']
+    def update(self, request, pk):
+
         try:
-            project = self.queryset.objects.get(id=pk)
+            project = self.queryset.objects.get(pk=pk)
         except Project.DoesNotExist:
             return Response(f'Проект {pk} не найден', status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(project, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=False):
             serializer.update(project, serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -78,3 +87,15 @@ class ProjectViewSet(viewsets.GenericViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk):
+        try:
+            project = self.queryset.objects.get(pk=pk)
+        except Project.DoesNotExist:
+            return Response(f'Проект {pk} не найден', status=status.HTTP_404_NOT_FOUND)
+        project.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
