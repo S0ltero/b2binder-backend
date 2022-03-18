@@ -79,17 +79,14 @@ AUTH_USER_MODEL = 'api.CustomUser'
 DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "USER_CREATE_PASSWORD_RETYPE": True,
-    #"LOGIN_FIELD": "email",
-    #"SERIALIZERS": {
-        #"user": "account.serializers.UserSerializer",
-       # "user_create": "account.serializers.CreateUserSerializer",
-        #"user_create_password_retype": "account.serializers.CreateUserSerializer",
-        #"current_user": "account.serializers.UserSerializer",
-        #"token": "account.serializers.TokenSerializer"
-   # },
-    #"EMAIL": {
-        #'password_reset': 'account.email.PasswordResetEmail',
-    #}
+    "LOGIN_FIELD": "email",
+    "SERIALIZERS": {
+        "user": "api.serializers.UserSerializer",
+        "user_create": "api.serializers.UserCreateSerializer",
+        "user_create_password_retype": "api.serializers.UserCreateSerializer",
+        "current_user": "api.serializers.UserSerializer",
+        "token": "api.serializers.TokenSerializer"
+    },
 }
 
 # RestFramework settings
