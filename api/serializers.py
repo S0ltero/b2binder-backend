@@ -26,11 +26,12 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
 
 
 class ProjectsSerialiazer(serializers.ModelSerializer):
-    creator = serializers.CharField(source='user.username')
+    categories = serializers.SlugRelatedField(slug_field='name', many=True, read_only=True)
 
     class Meta:
         model = Project
-        exclude = ('user', )
+        fields = ['id','title', 'short_description', 'categories',
+                  'profit', 'investments']
 
 
 class ProjectsCreateSerializer(serializers.ModelSerializer):
@@ -40,6 +41,7 @@ class ProjectsCreateSerializer(serializers.ModelSerializer):
         exclude = ('user',)
 
 class ProjectsDetailSerializer(serializers.ModelSerializer):
+    categories = serializers.SlugRelatedField(slug_field='name', many=True, read_only=True)
 
     class Meta:
         model = Project
