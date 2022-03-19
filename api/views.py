@@ -35,19 +35,6 @@ class UserViewSet(DjoserUserViewSet):
         likes = instance.likes_from.all().select_related("like_from")
         return Response(status=status.HTTP_200_OK)
 
-    def list(self, request, *args, **kwargs):
-        try:
-            user = self.queryset
-        except CustomUser.DoesNotExist:
-            return Response(f'Пользователи не найдены', status=status.HTTP_404_NOT_FOUND)
-        serializer = self.serializer_class(user, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def retrieve(self, request, *args, **kwargs):
-        user = self.get_object()
-        serializer = self.serializer_class(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class ProjectViewSet(viewsets.GenericViewSet):
     queryset = Project
