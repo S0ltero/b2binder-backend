@@ -4,7 +4,7 @@ from djoser.serializers import UserCreateSerializer as DjoserUserCreateSerialize
 from .models import (
     CustomUser,
     Project,
-
+    Callback
 )
 
 
@@ -53,3 +53,10 @@ class TokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Token
         fields = ('id', 'auth_token')
+
+
+class CallbackCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Callback
+        fields = '__all__'

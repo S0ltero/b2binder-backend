@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from rest_framework import status
+from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -9,6 +10,7 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from .models import (
     Project,
     CustomUser,
+    Callback
 )
 from .serializers import (
     ProjectsSerialiazer,
@@ -16,6 +18,7 @@ from .serializers import (
     ProjectsDetailSerializer,
     UserSerializer,
     UserCreateSerializer,
+    CallbackCreateSerializer
 )
 
 
@@ -102,5 +105,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-
-
+class CallbackAPIView(CreateAPIView):
+    queryset = Callback.objects.all()
+    serializer_class = CallbackCreateSerializer
