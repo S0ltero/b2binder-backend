@@ -9,4 +9,5 @@ router = DefaultRouter()
 router.register(r'projects', ProjectViewSet, basename='projects')
 
 urlpatterns = [
+    path('callback/', CallbackAPIView.as_view(), name='callback')
 ] + router.urls

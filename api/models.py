@@ -94,7 +94,7 @@ class Project(models.Model):
     image = models.ImageField(verbose_name='Изображение проекта', blank=True, null=True)
     investments = models.IntegerField(verbose_name='Инвестиции')
     profit = models.IntegerField(verbose_name='Доход')
-    categories = models.ManyToManyField(Category, verbose_name='Категории', related_name='projects')
+    categories = models.ManyToManyField(Category, verbose_name='Категории', related_name='categories')
 
 
     class Meta:
@@ -107,7 +107,7 @@ class Project(models.Model):
 
 class ProjectLike(models.Model):
     user = models.ForeignKey(CustomUser, related_name='likes', on_delete=models.CASCADE, verbose_name='Пользователь')
-    project = models.ForeignKey(Project, related_name='likes', on_delete=models.CASCADE, verbose_name='Проект')
+    project = models.ForeignKey(Project, related_name='project_likes', on_delete=models.CASCADE, verbose_name='Проект')
 
     class Meta:
         verbose_name = 'Оценка проекту'
