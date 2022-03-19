@@ -24,7 +24,7 @@ from .serializers import (
 
 class UserViewSet(DjoserUserViewSet):
 
-    queryset = CustomUser.objects.all()
+    queryset = CustomUser
 
     @action(detail=False, url_name="me/likes/to", url_path="me/likes/to")
     def likes_to(self, request, *args, **kwargs):
@@ -38,10 +38,24 @@ class UserViewSet(DjoserUserViewSet):
         likes = instance.likes_from.all().select_related("like_from")
         return Response(status=status.HTTP_200_OK)
 
+    @action(detail=False, url_name='project/likes/to', url_path='project/likes/to')
+    def project_likes_to(self, request, *args, **kwargs):
+        instance = self.request.user
+        project_likes = instance.likes.all().select_related('likes')
+        return Response(status=status.HTTP_200_OK)
+
+    @action(detail=False, url_name='project/likes/from', url_path='project/likes/from')
+    def project_likes_from(self, request, *args, **kwargs):
+        instance = self.request.user
+        project_likes = instance.project_likes.all().select_related('project_likes')
+        return Response(status=status.HTTP_200_OK)
+
+
 
 class ProjectViewSet(viewsets.GenericViewSet):
     queryset = Project
     serializer_class = ProjectsSerialiazer
+    permission_classes = (AllowAny,)
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
@@ -73,7 +87,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def update(self, request, pk):
-
         try:
             project = self.queryset.objects.get(pk=pk)
         except Project.DoesNotExist:
@@ -104,7 +117,26 @@ class ProjectViewSet(viewsets.GenericViewSet):
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=True, url_name='detail', url_path='detail', serializer_class=ProjectsDetailSerializer)
+    def project_detail(self, request, pk=None):
+        try:
+            project = self.queryset.objects.get(id=pk)
+        except Project.DoesNotExist:
+            return Response(f'Проект {pk} не найден', status=status.HTTP_404_NOT_FOUND)
+        serializer = self.serializer_class(project)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class CallbackAPIView(CreateAPIView):
     queryset = Callback.objects.all()
     serializer_class = CallbackCreateSerializer
+    permission_classes = (AllowAny,)
+
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
