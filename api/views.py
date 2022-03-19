@@ -1,3 +1,4 @@
+from django.db.models import Prefetch
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
@@ -10,7 +11,8 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from .models import (
     Project,
     CustomUser,
-    Callback
+    Callback,
+    Category
 )
 from .serializers import (
     ProjectsSerialiazer,
@@ -56,6 +58,13 @@ class ProjectViewSet(viewsets.GenericViewSet):
     queryset = Project
     serializer_class = ProjectsSerialiazer
     permission_classes = (AllowAny,)
+
+    def get_queryset(self):
+        queryset = Project.objects.all()
+        category = self.request.query_params.get('category')
+        if category is not None:
+            queryset = queryset.filter(categories__name=category)
+        return queryset
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
