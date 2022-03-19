@@ -14,6 +14,7 @@ class Chat(models.Model):
 class CustomUser(AbstractUser):
     photo = models.ImageField(verbose_name='Фото')
     profile_type = models.CharField(verbose_name='Тип профиля', max_length=100)
+    authorization = models.FileField(verbose_name='Авторизация', blank=True, null=True)
     city = models.CharField(verbose_name='Город', max_length=100)
     interest = ArrayField(models.CharField(max_length=100), verbose_name='Интересы', blank=True, null=True)
     looking = ArrayField(models.CharField(max_length=100), verbose_name='Кого мы ищем', blank=True, null=True)
@@ -73,13 +74,28 @@ class Message(models.Model):
     def __str__(self):
         return f'От {self.member} в {self.chat}'
 
+
+class Category(models.Model):
+    name = models.CharField(verbose_name='Название категории', max_length=100)
+
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
+
+    def __str__(self):
+        return f'{self.name}'
+
+
 class Project(models.Model):
     user = models.ForeignKey(CustomUser, related_name='projects', on_delete=models.CASCADE, verbose_name='Пользователь')
     title = models.CharField(verbose_name='Название проекта', max_length=100)
     description = models.TextField(verbose_name='Описание проекта')
+    short_description = models.CharField(verbose_name='Краткое описание', max_length=255)
+    image = models.ImageField(verbose_name='Изображение проекта', blank=True, null=True)
     investments = models.IntegerField(verbose_name='Инвестиции')
     profit = models.IntegerField(verbose_name='Доход')
-    tags = ArrayField(models.CharField(max_length=100), verbose_name='Категории')
+    categories = models.ManyToManyField(Category, verbose_name='Категории', related_name='projects')
+
 
     class Meta:
         verbose_name = 'Проект'
@@ -125,3 +141,13 @@ class ProjectNew(models.Model):
     def __str__(self):
         return f'Новость от {self.user} о {self.project}'
 
+
+class Callback(models.Model):
+    first_name = models.CharField(verbose_name='Имя', max_length=100)
+    last_name = models.CharField(verbose_name='Фамилия', max_length=100)
+    email = models.EmailField(verbose_name='Электронная почта')
+    text = models.TextField(verbose_name='Текст обращения')
+
+    class Meta:
+        verbose_name = 'Обратная связь'
+        verbose_name_plural = 'Обратная связь'
