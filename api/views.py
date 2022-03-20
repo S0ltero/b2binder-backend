@@ -1,4 +1,3 @@
-from django.db.models import Prefetch
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
@@ -12,7 +11,6 @@ from .models import (
     Project,
     CustomUser,
     Callback,
-    Category
 )
 from .serializers import (
     ProjectsSerialiazer,
@@ -31,7 +29,7 @@ class UserViewSet(DjoserUserViewSet):
     @action(detail=False, url_name="me/likes/to", url_path="me/likes/to")
     def likes_to(self, request, *args, **kwargs):
         instance = self.request.user
-        likes = instance.likes_to.all().select_related("like_to")
+        likes = instance.likes_to.all().select_related("likes_to")
         return Response(status=status.HTTP_200_OK)
 
     @action(detail=False, url_name="me/likes/from", url_path="me/likes/from")
@@ -49,7 +47,7 @@ class UserViewSet(DjoserUserViewSet):
     @action(detail=False, url_name='project/likes/from', url_path='project/likes/from')
     def project_likes_from(self, request, *args, **kwargs):
         instance = self.request.user
-        project_likes = instance.project_likes.all().select_related('project_likes')
+        project_likes = instance.projects.all().select_related('projects')
         return Response(status=status.HTTP_200_OK)
 
 
@@ -63,7 +61,8 @@ class ProjectViewSet(viewsets.GenericViewSet):
         queryset = Project.objects.all()
         category = self.request.query_params.get('category')
         if category is not None:
-            queryset = queryset.filter(categories__name=category)
+            category = list(category.split(','))
+            queryset = queryset.filter(categories__name__in=category)
         return queryset
 
     def get_serializer_class(self):
