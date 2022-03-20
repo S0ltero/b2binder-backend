@@ -39,8 +39,8 @@ class CustomUser(AbstractUser):
 
 
 class UserLike(models.Model):
-    like_to = models.ForeignKey(CustomUser, related_name='likes_to', on_delete=models.CASCADE)
-    like_from = models.ForeignKey(CustomUser, related_name='likes_from', on_delete=models.CASCADE)
+    like_to = models.ForeignKey(CustomUser, related_name='likes_from', on_delete=models.CASCADE)
+    like_from = models.ForeignKey(CustomUser, related_name='likes_to', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Оценка'
