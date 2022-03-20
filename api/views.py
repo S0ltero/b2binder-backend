@@ -81,7 +81,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
 
     def list(self, request, *args, **kwargs):
         try:
-            projects = self.queryset.objects.all()
+            projects = self.get_queryset()
         except Project.DoesNotExist:
             return Response(f'Проекты не найдены', status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(projects, many=True)
