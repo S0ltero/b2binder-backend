@@ -4,11 +4,13 @@ from djoser.serializers import UserCreateSerializer as DjoserUserCreateSerialize
 from .models import (
     CustomUser,
     Project,
-    Callback
+    Callback,
 )
 
 
 class UserSerializer(serializers.ModelSerializer):
+    likes_to = serializers.SlugRelatedField(slug_field='like_to_id', many=True, read_only=True)
+    likes_from = serializers.SlugRelatedField(slug_field='like_from_id', many=True, read_only=True)
 
     class Meta:
         model = CustomUser
