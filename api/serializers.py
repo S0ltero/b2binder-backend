@@ -5,12 +5,37 @@ from .models import (
     CustomUser,
     Project,
     Callback,
+    UserLike,
+    ProjectLike
 )
+
+class LikeToSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserLike
+        fields = ['like_to']
+
+
+class LikeFromSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserLike
+        fields = ['like_from']
+
+
+class ProjectLikeToSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProjectLike
+        fields = ['project']
+
+
+class ProjectLikeFromSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectLike
+        fields = ['user']
 
 
 class UserSerializer(serializers.ModelSerializer):
-    likes_to = serializers.SlugRelatedField(slug_field='like_to_id', many=True, read_only=True)
-    likes_from = serializers.SlugRelatedField(slug_field='like_from_id', many=True, read_only=True)
 
     class Meta:
         model = CustomUser
