@@ -15,6 +15,7 @@ class CustomUser(AbstractUser):
     photo = models.ImageField(verbose_name='Фото')
     profile_type = models.CharField(verbose_name='Тип профиля', max_length=100)
     authorization = models.FileField(verbose_name='Авторизация', blank=True, null=True)
+    country = models.CharField(verbose_name='Страна', max_length=100)
     city = models.CharField(verbose_name='Город', max_length=100)
     interest = ArrayField(models.CharField(max_length=100), verbose_name='Интересы', blank=True, null=True)
     looking = ArrayField(models.CharField(max_length=100), verbose_name='Кого мы ищем', blank=True, null=True)
@@ -106,8 +107,8 @@ class Project(models.Model):
 
 
 class ProjectLike(models.Model):
-    user = models.ForeignKey(CustomUser, related_name='likes', on_delete=models.CASCADE, verbose_name='Пользователь')
-    project = models.ForeignKey(Project, related_name='project_likes', on_delete=models.CASCADE, verbose_name='Проект')
+    user = models.ForeignKey(CustomUser, related_name='project_likes', on_delete=models.CASCADE, verbose_name='Пользователь')
+    project = models.ForeignKey(Project, related_name='likes', on_delete=models.CASCADE, verbose_name='Проект')
 
     class Meta:
         verbose_name = 'Оценка проекту'
