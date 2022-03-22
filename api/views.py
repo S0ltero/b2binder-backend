@@ -35,16 +35,16 @@ class UserViewSet(DjoserUserViewSet):
     @action(detail=False, url_name="me/likes/from", url_path="me/likes/from")
     def likes_from(self, request, *args, **kwargs):
         instance = self.request.user
-        likes = instance.likes_from.all().select_related("like_from")
+        likes = instance.likes_from.all().select_related("likes_from")
         return Response(status=status.HTTP_200_OK)
 
-    @action(detail=False, url_name='project/likes/to', url_path='project/likes/to')
+    @action(detail=False, url_name='me/project-likes/to', url_path='me/project-likes/to')
     def project_likes_to(self, request, *args, **kwargs):
         instance = self.request.user
-        project_likes = instance.likes.all().select_related('likes')
+        project_likes = instance.projects.all().select_related('likes').select_related('user')
         return Response(status=status.HTTP_200_OK)
 
-    @action(detail=False, url_name='project/likes/from', url_path='project/likes/from')
+    @action(detail=False, url_name='me/project-likes/from', url_path='me/project-likes/from')
     def project_likes_from(self, request, *args, **kwargs):
         instance = self.request.user
         project_likes = instance.projects.all().select_related('projects')
@@ -63,6 +63,11 @@ class ProjectViewSet(viewsets.GenericViewSet):
         if category is not None:
             category = list(category.split(','))
             queryset = queryset.filter(categories__name__in=category)
+
+        country = self.request.query_params.get('country')
+        if country is not None:
+            queryset = queryset.filter(user__country=country)
+
         return queryset
 
     def get_serializer_class(self):
