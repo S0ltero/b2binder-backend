@@ -19,10 +19,8 @@ from .serializers import (
     UserSerializer,
     UserCreateSerializer,
     CallbackCreateSerializer,
-    LikeToSerializer,
-    LikeFromSerializer,
-    ProjectLikeToSerializer,
-    ProjectLikeFromSerializer
+    UserLikeSerializer,
+    ProjectLikeSerializer,
 )
 
 
@@ -30,14 +28,14 @@ class UserViewSet(DjoserUserViewSet):
 
     queryset = CustomUser
 
-    @action(detail=False, url_name="me/likes/to", url_path="me/likes/to", serializer_class=LikeToSerializer)
+    @action(detail=False, url_name="me/likes/to", url_path="me/likes/to", serializer_class=UserLikeSerializer)
     def likes_to(self, request, *args, **kwargs):
         instance = self.request.user
         likes = instance.likes_to.all().select_related("like_to")
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, url_name="me/likes/from", url_path="me/likes/from", serializer_class=LikeFromSerializer)
+    @action(detail=False, url_name="me/likes/from", url_path="me/likes/from", serializer_class=UserLikeSerializer)
     def likes_from(self, request, *args, **kwargs):
         instance = self.request.user
         likes = instance.likes_from.all().select_related("like_from")
@@ -45,16 +43,16 @@ class UserViewSet(DjoserUserViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=False, url_name='me/project-likes/to', url_path='me/project-likes/to',
-            serializer_class=ProjectLikeToSerializer)
-    def project_likes_from(self, request, *args, **kwargs):
+            serializer_class=ProjectLikeSerializer)
+    def project_likes_to(self, request, *args, **kwargs):
         instance = self.request.user
         project_likes = instance.project_likes.all().select_related('project')
         serializer = self.serializer_class(project_likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=False, url_name='me/project-likes/from', url_path='me/project-likes/from',
-            serializer_class=ProjectLikeFromSerializer)
-    def project_likes_to(self, request, *args, **kwargs):
+            serializer_class=ProjectLikeSerializer)
+    def project_likes_from(self, request, *args, **kwargs):
         instance = self.request.user
         project_likes = instance.projects.all().select_related('likes').select_related('user')
         serializer = self.serializer_class(project_likes, many=True)

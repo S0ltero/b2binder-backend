@@ -9,30 +9,24 @@ from .models import (
     ProjectLike
 )
 
-class LikeToSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserLike
-        fields = ['like_to']
-
-
-class LikeFromSerializer(serializers.ModelSerializer):
+class UserLikeSerializer(serializers.ModelSerializer):
+    like_to = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    like_from = serializers.SlugRelatedField(slug_field='username', read_only=True)
 
     class Meta:
         model = UserLike
-        fields = ['like_from']
+        fields = ['like_to', 'like_from']
 
 
-class ProjectLikeToSerializer(serializers.ModelSerializer):
+
+class ProjectLikeSerializer(serializers.ModelSerializer):
+    project = serializers.SlugRelatedField(slug_field='title', read_only=True)
+    user = serializers.SlugRelatedField(slug_field='username', read_only=True)
 
     class Meta:
         model = ProjectLike
-        fields = ['project']
+        fields = ['user','project']
 
-
-class ProjectLikeFromSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectLike
-        fields = ['user']
 
 
 class UserSerializer(serializers.ModelSerializer):
