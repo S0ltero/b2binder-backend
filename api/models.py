@@ -1,6 +1,9 @@
+from django.core import validators
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import AbstractUser
+
+from .managers import UserManager
 
 
 class Chat(models.Model):
@@ -12,30 +15,46 @@ class Chat(models.Model):
 
 
 class CustomUser(AbstractUser):
+
+    username = None
+    email = models.EmailField(
+        "Email адрес",
+        unique=True,
+        validators=[validators.validate_email],
+        error_messages={
+            "unique": "Пользователь с таким email уже существует.",
+        },
+    )
+
     photo = models.ImageField(verbose_name='Фото')
     profile_type = models.CharField(verbose_name='Тип профиля', max_length=100)
     authorization = models.FileField(verbose_name='Авторизация', blank=True, null=True)
     country = models.CharField(verbose_name='Страна', max_length=100)
     city = models.CharField(verbose_name='Город', max_length=100)
-    interest = ArrayField(models.CharField(max_length=100), verbose_name='Интересы', blank=True, null=True)
-    looking = ArrayField(models.CharField(max_length=100), verbose_name='Кого мы ищем', blank=True, null=True)
+    interest = ArrayField(models.CharField(max_length=100), verbose_name='Интересы', blank=True, default=list)
+    looking = ArrayField(models.CharField(max_length=100), verbose_name='Кого мы ищем', blank=True, default=list)
 
-    first_name = models.CharField(verbose_name='Имя', max_length=100, blank=True, null=True)
-    last_name = models.CharField(verbose_name='Фамилия', max_length=100, blank=True, null=True)
-    middle_name = models.CharField(verbose_name='Отчество', max_length=100, blank=True, null=True)
+    first_name = models.CharField(verbose_name='Имя', max_length=100, blank=True)
+    last_name = models.CharField(verbose_name='Фамилия', max_length=100, blank=True)
+    middle_name = models.CharField(verbose_name='Отчество', max_length=100, blank=True)
 
     chats = models.ManyToManyField(Chat, through='ChatMember', blank=True, verbose_name='Чаты')
 
-    company_name = models.CharField(verbose_name='Название компании', max_length=100, blank=True, null=True)
-    company_description = models.TextField(verbose_name='Описание компании', blank=True, null=True)
-    company_type = models.CharField(verbose_name='Тип компании', max_length=100, blank=True, null=True)
+    company_name = models.CharField(verbose_name='Название компании', max_length=100, blank=True)
+    company_description = models.TextField(verbose_name='Описание компании', blank=True)
+    company_type = models.CharField(verbose_name='Тип компании', max_length=100, blank=True)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ()
+
+    objects = UserManager()
 
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
     def __str__(self):
-        return f'{self.username}'
+        return f'{self.email}'
 
 
 
