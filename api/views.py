@@ -13,7 +13,7 @@ from .models import (
     Callback,
 )
 from .serializers import (
-    ProjectsSerialiazer,
+    ProjectsSerializer,
     ProjectsCreateSerializer,
     ProjectsDetailSerializer,
     UserSerializer,
@@ -27,6 +27,18 @@ from .serializers import (
 class UserViewSet(DjoserUserViewSet):
 
     queryset = CustomUser
+
+    @action(detail=True, methods=['post'], url_name='likes', url_path='likes', serializer_class=UserLikeSerializer)
+    def likes(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data['like_to'] = self.request.user.id
+
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, url_name="me/likes/to", url_path="me/likes/to", serializer_class=UserLikeSerializer)
     def likes_to(self, request, *args, **kwargs):
@@ -62,7 +74,7 @@ class UserViewSet(DjoserUserViewSet):
 
 class ProjectViewSet(viewsets.GenericViewSet):
     queryset = Project
-    serializer_class = ProjectsSerialiazer
+    serializer_class = ProjectsSerializer
     permission_classes = (AllowAny,)
 
     def get_queryset(self):
@@ -82,7 +94,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         if self.action in ['create', 'update']:
             return ProjectsCreateSerializer
         else:
-            return ProjectsSerialiazer
+            return ProjectsSerializer
 
     def get_permissions(self):
         if action in ['update', 'create', 'destroy']:
@@ -154,8 +166,8 @@ class CallbackAPIView(CreateAPIView):
     permission_classes = (AllowAny,)
 
     def create(self, request, *args, **kwargs):
-        data = request.data.copy()
-        serializer = self.serializer_class(data=data)
+        serializer = self.serializer_class(data=request.data)
+
         if serializer.is_valid(raise_exception=False):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
