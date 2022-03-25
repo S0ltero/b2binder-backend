@@ -123,8 +123,7 @@ class Project(models.Model):
 
 
 class ProjectLike(models.Model):
-    user = models.ForeignKey(CustomUser, related_name='project_likes', on_delete=models.CASCADE,
-                             verbose_name='Пользователь')
+    user = models.ForeignKey(CustomUser, related_name='project_likes', on_delete=models.CASCADE, verbose_name='Пользователь')
     project = models.ForeignKey(Project, related_name='likes', on_delete=models.CASCADE, verbose_name='Проект')
 
     class Meta:

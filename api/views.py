@@ -27,6 +27,7 @@ from .serializers import (
 class UserViewSet(DjoserUserViewSet):
 
     queryset = CustomUser
+    permission_classes = (IsAuthenticated)
 
     @action(detail=True, methods=['post'], url_name='likes', url_path='likes', serializer_class=UserLikeSerializer)
     def likes(self, request, *args, **kwargs):

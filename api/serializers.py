@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        exclude = ('password', 'last_login', 'groups',
+        exclude = ('password', 'last_login', 'groups', 'user_permissions',
                     'is_superuser', 'is_active', 'is_staff', 'date_joined')
 
 
@@ -30,8 +30,8 @@ class ProjectsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['id','title', 'short_description', 'categories',
-                  'profit', 'investments']
+        fields = ('id','title', 'short_description', 'categories',
+                  'profit', 'investments')
 
 
 class ProjectsCreateSerializer(serializers.ModelSerializer):
@@ -52,7 +52,7 @@ class UserLikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserLike
-        fields = ['like_to', 'like_from']
+        fields = ('like_to', 'like_from')
 
     def to_representation(self, instance):
         self.fields['like_to'] = UserSerializer(read_only=True)
@@ -64,7 +64,7 @@ class ProjectLikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectLike
-        fields = ['user', 'project']
+        fields = ('user', 'project')
 
     def to_representation(self, instance):
         self.fields['project'] = ProjectsSerializer(read_only=True)
