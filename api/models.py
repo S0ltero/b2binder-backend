@@ -7,18 +7,16 @@ from .managers import UserManager
 
 
 class Chat(models.Model):
-
     class Meta:
         verbose_name = 'Чат'
         verbose_name_plural = 'Чаты'
 
 
-
 class CustomUser(AbstractUser):
-
     username = None
+
     email = models.EmailField(
-        "Email адрес",
+        "Email-адрес",
         unique=True,
         validators=[validators.validate_email],
         error_messages={
@@ -57,7 +55,6 @@ class CustomUser(AbstractUser):
         return f'{self.email}'
 
 
-
 class UserLike(models.Model):
     like_to = models.ForeignKey(CustomUser, related_name='likes_from', on_delete=models.CASCADE)
     like_from = models.ForeignKey(CustomUser, related_name='likes_to', on_delete=models.CASCADE)
@@ -85,7 +82,8 @@ class ChatMember(models.Model):
 
 class Message(models.Model):
     chat = models.ForeignKey(Chat, related_name='messages', on_delete=models.CASCADE, verbose_name='Чат')
-    member = models.ForeignKey(CustomUser, related_name='messages', on_delete=models.CASCADE, verbose_name='Участник чата')
+    member = models.ForeignKey(CustomUser, related_name='messages', on_delete=models.CASCADE,
+                               verbose_name='Участник чата')
 
     class Meta:
         verbose_name = 'Сообщение'
@@ -116,7 +114,6 @@ class Project(models.Model):
     profit = models.IntegerField(verbose_name='Доход')
     categories = models.ManyToManyField(Category, verbose_name='Категории', related_name='categories')
 
-
     class Meta:
         verbose_name = 'Проект'
         verbose_name_plural = 'Проекты'
@@ -126,7 +123,8 @@ class Project(models.Model):
 
 
 class ProjectLike(models.Model):
-    user = models.ForeignKey(CustomUser, related_name='project_likes', on_delete=models.CASCADE, verbose_name='Пользователь')
+    user = models.ForeignKey(CustomUser, related_name='project_likes', on_delete=models.CASCADE,
+                             verbose_name='Пользователь')
     project = models.ForeignKey(Project, related_name='likes', on_delete=models.CASCADE, verbose_name='Проект')
 
     class Meta:
@@ -135,6 +133,7 @@ class ProjectLike(models.Model):
 
     def __str__(self):
         return f'{self.user} оценил {self.project}'
+
 
 class ProjectComment(models.Model):
     user = models.ForeignKey(CustomUser, related_name='comments', on_delete=models.CASCADE, verbose_name='Пользователь')
@@ -171,3 +170,6 @@ class Callback(models.Model):
     class Meta:
         verbose_name = 'Обратная связь'
         verbose_name_plural = 'Обратная связь'
+
+    def __str__(self):
+        return f'{self.email}'
