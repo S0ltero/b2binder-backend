@@ -25,28 +25,6 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
         fields = ('username', 'email', 'password',
                   'photo', 'profile_type', 'city')
 
-class UserLikeSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = UserLike
-        fields = ['like_to', 'like_from']
-
-    def to_representation(self, instance):
-        self.fields['like_to'] = UserSerializer(read_only=True)
-        self.fields['like_from'] = UserSerializer(read_only=True)
-        return super().to_representation(instance)
-
-
-
-class ProjectLikeSerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField(slug_field='title', read_only=True)
-    user = serializers.SlugRelatedField(slug_field='username', read_only=True)
-
-    class Meta:
-        model = ProjectLike
-        fields = ['user', 'project']
-
-
 class ProjectsSerializer(serializers.ModelSerializer):
     categories = serializers.SlugRelatedField(slug_field='name', many=True, read_only=True)
 
@@ -69,6 +47,30 @@ class ProjectsDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = '__all__'
+
+class UserLikeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserLike
+        fields = ['like_to', 'like_from']
+
+    def to_representation(self, instance):
+        self.fields['like_to'] = UserSerializer(read_only=True)
+        self.fields['like_from'] = UserSerializer(read_only=True)
+        return super().to_representation(instance)
+
+
+class ProjectLikeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProjectLike
+        fields = ['user', 'project']
+
+    def to_representation(self, instance):
+        self.fields['project'] = ProjectsSerializer(read_only=True)
+        self.fields['user'] = UserSerializer(read_only=True)
+        return super().to_representation(instance)
+
 
 
 class TokenSerializer(serializers.ModelSerializer):
