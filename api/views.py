@@ -40,6 +40,18 @@ class UserViewSet(DjoserUserViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=True, methods=['post'], url_name='project-likes', url_path='project-likes', serializer_class=ProjectLikeSerializer)
+    def project_likes(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data['user'] = self.request.user.id
+
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     @action(detail=False, url_name="me/likes/to", url_path="me/likes/to", serializer_class=UserLikeSerializer)
     def likes_to(self, request, *args, **kwargs):
         instance = self.request.user
