@@ -13,6 +13,16 @@ class ProjectLikeInline(admin.StackedInline):
     extra = 0
 
 
+class ProjectCommentInline(admin.StackedInline):
+    model = ProjectComment
+    extra = 0
+
+
+class ProjectNewInline(admin.StackedInline):
+    model = ProjectNew
+    extra = 0
+
+
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'investments', 'profit')
@@ -22,7 +32,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
 @admin.register(CustomUser)
 class UserAdmin(admin.ModelAdmin):
-    inlines = (UserLikeInline, ProjectLikeInline)
+    inlines = (UserLikeInline, ProjectLikeInline, ProjectCommentInline, ProjectNewInline)
     list_display = ('id', 'email', 'last_name', 'first_name', 'country')
     list_display_links = ('id', 'email')
     exclude = ('password', 'last_login', 'groups', 'user_permissions',
@@ -31,9 +41,12 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Callback)
 class CallbackAdmin(admin.ModelAdmin):
-    list_display = ('email', 'last_name', 'first_name')
+    list_display = ('id', 'email', 'last_name', 'first_name')
+    list_display_links = ('id', 'email')
 
 
 admin.site.register(Category)
 admin.site.register(UserLike)
 admin.site.register(ProjectLike)
+admin.site.register(ProjectComment)
+admin.site.register(ProjectNew)
