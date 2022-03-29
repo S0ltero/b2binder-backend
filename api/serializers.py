@@ -32,7 +32,7 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password')
+        fields = ('email', 'password')
 
 
 class ProjectsSerializer(serializers.ModelSerializer):
