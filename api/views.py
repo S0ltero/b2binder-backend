@@ -21,30 +21,20 @@ from .serializers import (
     CallbackCreateSerializer,
     UserLikeSerializer,
     ProjectLikeSerializer,
+    ProjectNewSerializer,
+    ProjectCommentSerializer
 )
 
 
 class UserViewSet(DjoserUserViewSet):
 
     queryset = CustomUser
-    permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated, )
 
     @action(detail=True, methods=['post'], url_name='likes', url_path='likes', serializer_class=UserLikeSerializer)
     def likes(self, request, *args, **kwargs):
         data = request.data.copy()
         data['like_to'] = self.request.user.id
-
-        serializer = self.serializer_class(data=data)
-        if serializer.is_valid(raise_exception=False):
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    @action(detail=True, methods=['post'], url_name='project-likes', url_path='project-likes', serializer_class=ProjectLikeSerializer)
-    def project_likes(self, request, *args, **kwargs):
-        data = request.data.copy()
-        data['user'] = self.request.user.id
 
         serializer = self.serializer_class(data=data)
         if serializer.is_valid(raise_exception=False):
@@ -171,6 +161,47 @@ class ProjectViewSet(viewsets.GenericViewSet):
             return Response(f'Проект {pk} не найден', status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'], url_name='project-likes', url_path='project-likes',
+            serializer_class=ProjectLikeSerializer)
+    def project_likes(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data['user'] = self.request.user.id
+
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'], url_name='comments', url_path='comments',
+            serializer_class=ProjectCommentSerializer)
+    def comment(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data['user'] = self.request.user.id
+
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'], url_name='news', url_path='news',
+            serializer_class=ProjectNewSerializer)
+    def news(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data['user'] = self.request.user.id
+
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 class CallbackAPIView(CreateAPIView):
