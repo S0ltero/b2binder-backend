@@ -79,7 +79,7 @@ AUTH_USER_MODEL = 'api.CustomUser'
 DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "USER_CREATE_PASSWORD_RETYPE": True,
-    "SEND_CONFIRMATION_EMAIL": True,
+    "SEND_CONFIRMATION_EMAIL": False,
     "LOGIN_FIELD": "email",
     "SERIALIZERS": {
         "user": "api.serializers.UserSerializer",
@@ -88,20 +88,6 @@ DJOSER = {
         "current_user": "api.serializers.UserSerializer",
         "token": "api.serializers.TokenSerializer"
     },
-    "PERMISSIONS": {
-        'password_reset': ['rest_framework.permissions.IsAuthenticated'],
-        'password_reset_confirm': ['rest_framework.permissions.IsAuthenticated'],
-        'user_delete': ['rest_framework.permissions.IsAdminUser'],
-        'user_create': ['rest_framework.permissions.AllowAny'],
-        'user_list': ['rest_framework.permissions.IsAuthenticated'],
-        'user': ['rest_framework.permissions.IsAuthenticated'],
-        'token_create': ['rest_framework.permissions.AllowAny'],
-        'token_destroy': ['rest_framework.permissions.IsAuthenticated'],
-    },
-    "EMAIL": {
-        'confirmation': 'djoser.email.ConfirmationEmail',
-        'password_reset': 'djoser.email.PasswordResetEmail',
-    }
 
 }
 
