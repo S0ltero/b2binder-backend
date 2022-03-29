@@ -202,8 +202,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
 class CallbackAPIView(CreateAPIView):
     queryset = Callback.objects.all()
     serializer_class = CallbackCreateSerializer
