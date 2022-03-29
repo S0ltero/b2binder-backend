@@ -17,7 +17,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ('name', )
+
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -33,13 +34,17 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
         model = CustomUser
         fields = ('username', 'email', 'password')
 
+
 class ProjectsSerializer(serializers.ModelSerializer):
-    categories = serializers.SlugRelatedField(slug_field='name', many=True, read_only=True)
 
     class Meta:
         model = Project
         fields = ('id','title', 'short_description', 'categories',
                   'profit', 'investments')
+
+    def to_representation(self, instance):
+        self.fields['categories'] = CategorySerializer(many=True, read_only=True)
+        return super().to_representation(instance)
 
 
 class ProjectsCreateSerializer(serializers.ModelSerializer):
@@ -54,11 +59,14 @@ class ProjectsCreateSerializer(serializers.ModelSerializer):
 
 
 class ProjectsDetailSerializer(serializers.ModelSerializer):
-    categories = serializers.SlugRelatedField(slug_field='name', many=True, read_only=True)
 
     class Meta:
         model = Project
         fields = '__all__'
+
+    def to_representation(self, instance):
+        self.fields['categories'] = CategorySerializer(many=True, read_only=True)
+        return super().to_representation(instance)
 
 
 class UserLikeSerializer(serializers.ModelSerializer):
@@ -106,8 +114,6 @@ class ProjectNewSerializer(serializers.ModelSerializer):
         self.fields['user'] = UserSerializer(read_only=True)
         self.fields['project'] = ProjectsSerializer(read_only=True)
         return super().to_representation(instance)
-
-
 
 
 class TokenSerializer(serializers.ModelSerializer):
