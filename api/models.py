@@ -112,7 +112,7 @@ class Project(models.Model):
     image = models.ImageField(verbose_name='Изображение проекта', blank=True, null=True)
     investments = models.IntegerField(verbose_name='Инвестиции')
     profit = models.IntegerField(verbose_name='Доход')
-    categories = models.ManyToManyField(Category, verbose_name='Категории', related_name='categories')
+    categories = models.ManyToManyField(Category, verbose_name='Категории', related_name='cat_projects')
 
     class Meta:
         verbose_name = 'Проект'
