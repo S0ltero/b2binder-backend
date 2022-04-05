@@ -1,12 +1,22 @@
 FROM python:3.9.5-slim
 
-WORKDIR /app
+RUN mkdir -p /home/app
+
+RUN addgroup --system app && adduser --system --group app
+
+ENV HOME=/home/app
+WORKDIR $HOME
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 RUN pip install --upgrade pip
-COPY requirements.txt .
+COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY ./ /app
+COPY ./ $HOME
+
+RUN chown -R app:app $HOME
+
+USER app
+
