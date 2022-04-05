@@ -7,6 +7,9 @@ RUN addgroup --system app && adduser --system --group app
 ENV HOME=/home/app
 WORKDIR $HOME
 
+RUN mkdir staticfiles && chown app:app staticfiles
+RUN mkdir mediafiles && chown app:app mediafiles
+
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
