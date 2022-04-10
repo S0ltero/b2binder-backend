@@ -68,7 +68,7 @@ class UserLike(models.Model):
         unique_together = ('like_to', 'like_from')
 
     def __str__(self):
-        return f'{self.like_to} оценил {self.like_from}'
+        return f'{self.like_from} оценил {self.like_to}'
 
 
 class ChatMember(models.Model):
