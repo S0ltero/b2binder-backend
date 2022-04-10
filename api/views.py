@@ -76,7 +76,6 @@ class UserViewSet(DjoserUserViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
 class ProjectViewSet(viewsets.GenericViewSet):
     queryset = Project
     serializer_class = ProjectsSerializer
