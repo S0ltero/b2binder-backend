@@ -16,14 +16,6 @@ services:
       - ./.env
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    depends_on:
-      - db
-  db:
-    image: postgres:13.0-alpine
-    volumes:
-      - postgres_data:/var/lib/postgesql/data
-    env_file:
-      - ./.env
   nginx:
     build: ./nginx
     volumes:
@@ -35,7 +27,5 @@ services:
       - web
 
 volumes:
-  postgres_data:
   static_volume:
   media_volume:
-
