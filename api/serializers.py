@@ -36,37 +36,28 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
 
 
 class ProjectsSerializer(serializers.ModelSerializer):
+    categories = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
 
     class Meta:
         model = Project
         fields = ('id','title', 'short_description', 'categories',
                   'profit', 'investments')
 
-    def to_representation(self, instance):
-        self.fields['categories'] = CategorySerializer(many=True, read_only=True)
-        return super().to_representation(instance)
-
 
 class ProjectsCreateSerializer(serializers.ModelSerializer):
+    categories = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
 
     class Meta:
         model = Project
         exclude = ('user',)
 
-    def to_representation(self, instance):
-        self.fields['categories'] = CategorySerializer(many=True, read_only=True)
-        return super().to_representation(instance)
-
 
 class ProjectsDetailSerializer(serializers.ModelSerializer):
+    categories = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
 
     class Meta:
         model = Project
         fields = '__all__'
-
-    def to_representation(self, instance):
-        self.fields['categories'] = CategorySerializer(many=True, read_only=True)
-        return super().to_representation(instance)
 
 
 class UserLikeSerializer(serializers.ModelSerializer):
@@ -75,22 +66,12 @@ class UserLikeSerializer(serializers.ModelSerializer):
         model = UserLike
         fields = ('like_to', 'like_from')
 
-    def to_representation(self, instance):
-        self.fields['like_to'] = UserSerializer(read_only=True)
-        self.fields['like_from'] = UserSerializer(read_only=True)
-        return super().to_representation(instance)
-
 
 class ProjectLikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectLike
         fields = ('user', 'project')
-
-    def to_representation(self, instance):
-        self.fields['project'] = ProjectsSerializer(read_only=True)
-        self.fields['user'] = UserSerializer(read_only=True)
-        return super().to_representation(instance)
 
 
 class ProjectCommentSerializer(serializers.ModelSerializer):
@@ -99,21 +80,12 @@ class ProjectCommentSerializer(serializers.ModelSerializer):
         model = ProjectComment
         fields = ('user', 'project', 'text')
 
-    def to_representation(self, instance):
-        self.fields['user'] = UserSerializer(read_only=True)
-        self.fields['project'] = ProjectsSerializer(read_only=True)
-        return super().to_representation(instance)
-
 
 class ProjectNewSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = ProjectNew
         fields = ('user', 'project', 'text')
-
-    def to_representation(self, instance):
-        self.fields['user'] = UserSerializer(read_only=True)
-        self.fields['project'] = ProjectsSerializer(read_only=True)
-        return super().to_representation(instance)
 
 
 class TokenSerializer(serializers.ModelSerializer):
