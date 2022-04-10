@@ -33,9 +33,10 @@ class UserViewSet(DjoserUserViewSet):
     permission_classes = (IsAuthenticated, )
 
     @action(detail=True, methods=['post'], url_name='likes', url_path='likes', serializer_class=UserLikeSerializer)
-    def likes(self, request, *args, **kwargs):
+    def likes(self, request, id=None):
         data = request.data.copy()
-        data['like_to'] = self.request.user.id
+        data["like_from"] = self.request.user.id
+        data["like_to"] = id
 
         serializer = self.serializer_class(data=data)
         if serializer.is_valid(raise_exception=False):
