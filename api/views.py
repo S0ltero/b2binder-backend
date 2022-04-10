@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 from djoser.views import UserViewSet as DjoserUserViewSet
 
+from .permissions import IsOwner
 from .models import (
     Project,
     CustomUser,
