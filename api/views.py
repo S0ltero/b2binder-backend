@@ -59,20 +59,19 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, url_name='me/project-likes/to', url_path='me/project-likes/to',
-            serializer_class=ProjectLikeSerializer)
-    def project_likes_to(self, request, *args, **kwargs):
+    @action(detail=False, url_name="me/likes/projects", url_path="me/likes/projects", serializer_class=ProjectsSerializer)
+    def like_projects(self, request, *args, **kwargs):
         instance = self.request.user
-        project_likes = instance.project_likes.all().select_related('project')
-        serializer = self.serializer_class(project_likes, many=True)
+        likes = instance.like_projects.all()
+        serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, url_name='me/project-likes/from', url_path='me/project-likes/from',
-            serializer_class=ProjectLikeSerializer)
-    def project_likes_from(self, request, *args, **kwargs):
+    @action(detail=False, url_name="me/projects/likes", url_path="me/projects/likes", serializer_class=UserSerializer)
+    def projects_likes(self, request, *args, **kwargs):
         instance = self.request.user
-        project_likes = instance.projects.all().select_related('likes').select_related('user')
-        serializer = self.serializer_class(project_likes, many=True)
+        user_ids = instance.projects.values_list("likes", flat=True)
+        likes = CustomUser.objects.filter(id__in=user_ids)
+        serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
