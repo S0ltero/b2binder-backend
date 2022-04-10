@@ -101,8 +101,10 @@ class ProjectViewSet(viewsets.GenericViewSet):
             return ProjectsSerializer
 
     def get_permissions(self):
-        if action in ['update', 'create', 'destroy']:
+        if self.action == "create":
             self.permission_classes = [IsAuthenticated]
+        elif self.action in ["update", "destroy"]:
+            self.permission_classes = [IsAuthenticated, IsOwner]
         else:
             self.permission_classes = [AllowAny]
         return super().get_permissions()
