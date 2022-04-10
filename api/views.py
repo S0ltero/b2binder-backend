@@ -44,17 +44,17 @@ class UserViewSet(DjoserUserViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, url_name="me/likes/to", url_path="me/likes/to", serializer_class=UserLikeSerializer)
+    @action(detail=False, url_name="me/likes/to", url_path="me/likes/to", serializer_class=UserSerializer)
     def likes_to(self, request, *args, **kwargs):
         instance = self.request.user
-        likes = instance.likes_to.all().select_related("like_to")
+        likes = instance.likes_to.all()
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, url_name="me/likes/from", url_path="me/likes/from", serializer_class=UserLikeSerializer)
+    @action(detail=False, url_name="me/likes/from", url_path="me/likes/from", serializer_class=UserSerializer)
     def likes_from(self, request, *args, **kwargs):
         instance = self.request.user
-        likes = instance.likes_from.all().select_related("like_from")
+        likes = instance.likes_from.all()
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
