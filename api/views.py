@@ -156,11 +156,12 @@ class ProjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['post'], url_name='project-likes', url_path='project-likes',
+    @action(detail=True, methods=['post'], url_name='likes', url_path='likes',
             serializer_class=ProjectLikeSerializer)
-    def project_likes(self, request, *args, **kwargs):
+    def project_likes(self, request, pk=None):
         data = request.data.copy()
-        data['user'] = self.request.user.id
+        data["project"] = pk
+        data["user"] = self.request.user.id
 
         serializer = self.serializer_class(data=data)
         if serializer.is_valid(raise_exception=False):
@@ -169,11 +170,12 @@ class ProjectViewSet(viewsets.GenericViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_name='comments', url_path='comments',
+    @action(detail=True, methods=['post'], url_name='comments', url_path='comments',
             serializer_class=ProjectCommentSerializer)
-    def comment(self, request, *args, **kwargs):
+    def comments(self, request, pk=None):
         data = request.data.copy()
-        data['user'] = self.request.user.id
+        data["project"] = pk
+        data["user"] = self.request.user.id
 
         serializer = self.serializer_class(data=data)
         if serializer.is_valid(raise_exception=False):
@@ -182,11 +184,12 @@ class ProjectViewSet(viewsets.GenericViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_name='news', url_path='news',
+    @action(detail=True, methods=['post'], url_name='news', url_path='news',
             serializer_class=ProjectNewSerializer)
-    def news(self, request, *args, **kwargs):
+    def news(self, request, pk=None):
         data = request.data.copy()
-        data['user'] = self.request.user.id
+        data["project"] = pk
+        data["user"] = self.request.user.id
 
         serializer = self.serializer_class(data=data)
         if serializer.is_valid(raise_exception=False):
