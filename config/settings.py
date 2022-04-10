@@ -73,9 +73,7 @@ AUTH_USER_MODEL = 'api.CustomUser'
 
 # Djoser settings
 DJOSER = {
-    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "USER_CREATE_PASSWORD_RETYPE": True,
-    "SEND_CONFIRMATION_EMAIL": False,
     "LOGIN_FIELD": "email",
     "SERIALIZERS": {
         "user": "api.serializers.UserSerializer",
