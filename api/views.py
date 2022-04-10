@@ -123,10 +123,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def update(self, request, pk):
-        try:
-            project = self.queryset.objects.get(pk=pk)
-        except Project.DoesNotExist:
-            return Response(f'Проект {pk} не найден', status=status.HTTP_404_NOT_FOUND)
+        project = self.get_object()
         serializer = self.serializer_class(project, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=False):
             serializer.update(project, serializer.validated_data)
@@ -146,19 +143,13 @@ class ProjectViewSet(viewsets.GenericViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk):
-        try:
-            project = self.queryset.objects.get(pk=pk)
-        except Project.DoesNotExist:
-            return Response(f'Проект {pk} не найден', status=status.HTTP_404_NOT_FOUND)
+        project = self.get_object()
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, url_name='detail', url_path='detail', serializer_class=ProjectsDetailSerializer)
     def project_detail(self, request, pk=None):
-        try:
-            project = self.queryset.objects.get(id=pk)
-        except Project.DoesNotExist:
-            return Response(f'Проект {pk} не найден', status=status.HTTP_404_NOT_FOUND)
+        project = self.get_object()
         serializer = self.serializer_class(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
