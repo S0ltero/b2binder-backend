@@ -71,6 +71,20 @@ class UserLike(models.Model):
         return f'{self.like_from} оценил {self.like_to}'
 
 
+class UserSubscribe(models.Model):
+    subscriber = models.ForeignKey(CustomUser, related_name='+', on_delete=models.CASCADE, verbose_name='Подписчик')
+    subscription = models.ForeignKey(CustomUser, related_name='+', on_delete=models.CASCADE, verbose_name='Подписка')
+
+    class Meta:
+        verbose_name = 'Подписчик'
+        verbose_name_plural = 'Подписчики'
+        unique_together = ('subscriber', 'subscription')
+
+    def __str__(self):
+        return f'{self.subscriber}, {self.subscription}'
+
+
+
 class ChatMember(models.Model):
     chat = models.ForeignKey(Chat, related_name='members', on_delete=models.CASCADE, verbose_name='Чат')
     user = models.ForeignKey(CustomUser, related_name='members', on_delete=models.CASCADE, verbose_name='Участник чата')
@@ -161,6 +175,19 @@ class ProjectNew(models.Model):
 
     def __str__(self):
         return f'Новость от {self.user} о {self.project}'
+
+
+class ProjectOffer(models.Model):
+    user = models.ForeignKey(CustomUser, related_name='offers', on_delete=models.CASCADE, verbose_name='Пользователь')
+    project = models.ForeignKey(Project, related_name='offers', on_delete=models.CASCADE, verbose_name='Проект')
+    amount = models.PositiveIntegerField(verbose_name='Размер инвестиции')
+
+    class Meta:
+        verbose_name = 'Инвестиция'
+        verbose_name_plural = 'Инвестиции'
+
+    def __str__(self):
+        return f'Инвестиция от {self.user} в {self.project}'
 
 
 class Callback(models.Model):
