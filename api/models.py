@@ -42,8 +42,10 @@ class CustomUser(AbstractUser):
     company_description = models.TextField(verbose_name='Описание компании', blank=True)
     company_type = models.CharField(verbose_name='Тип компании', max_length=100, blank=True)
 
-    likes_from = models.ManyToManyField("self", related_name="likes_to", through="UserLike", symmetrical=False)
-    like_projects = models.ManyToManyField("Project", related_name="likes", through="ProjectLike", symmetrical=False)
+    likes_from = models.ManyToManyField('self', related_name='likes_to', through='UserLike', symmetrical=False)
+    like_projects = models.ManyToManyField('Project', related_name='likes', through='ProjectLike', symmetrical=False)
+
+    subscriptions = models.ManyToManyField('self', related_name='subscribers', through='UserSubscribe', symmetrical=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ()
