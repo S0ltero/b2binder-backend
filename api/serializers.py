@@ -77,6 +77,7 @@ class ProjectOfferSerializer(serializers.ModelSerializer):
 
 class ProjectsDetailSerializer(serializers.ModelSerializer):
     categories = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
+    offers = ProjectOfferSerializer(read_only=True, many=True)
 
     class Meta:
         model = Project
