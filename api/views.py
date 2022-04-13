@@ -23,7 +23,9 @@ from .serializers import (
     UserLikeSerializer,
     ProjectLikeSerializer,
     ProjectNewSerializer,
-    ProjectCommentSerializer
+    ProjectCommentSerializer,
+    UserSubscribeSerializer,
+    ProjectOfferSerializer
 )
 
 
@@ -32,7 +34,8 @@ class UserViewSet(DjoserUserViewSet):
     queryset = CustomUser
     permission_classes = (IsAuthenticated, )
 
-    @action(detail=True, methods=['post'], url_name='likes', url_path='likes', serializer_class=UserLikeSerializer)
+    @action(detail=True, methods=['post'], url_name='likes', url_path='likes',
+            serializer_class=UserLikeSerializer)
     def likes(self, request, id=None):
         data = request.data.copy()
         data["like_from"] = self.request.user.id
@@ -45,33 +48,59 @@ class UserViewSet(DjoserUserViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, url_name="me/likes/to", url_path="me/likes/to", serializer_class=UserSerializer)
+    @action(detail=False, url_name="me/likes/to", url_path="me/likes/to",
+            serializer_class=UserSerializer)
     def likes_to(self, request, *args, **kwargs):
         instance = self.request.user
         likes = instance.likes_to.all()
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, url_name="me/likes/from", url_path="me/likes/from", serializer_class=UserSerializer)
+    @action(detail=False, url_name="me/likes/from", url_path="me/likes/from",
+            serializer_class=UserSerializer)
     def likes_from(self, request, *args, **kwargs):
         instance = self.request.user
         likes = instance.likes_from.all()
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, url_name="me/likes/projects", url_path="me/likes/projects", serializer_class=ProjectsSerializer)
+    @action(detail=False, url_name="me/likes/projects", url_path="me/likes/projects",
+            serializer_class=ProjectsSerializer)
     def like_projects(self, request, *args, **kwargs):
         instance = self.request.user
         likes = instance.like_projects.all()
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, url_name="me/projects/likes", url_path="me/projects/likes", serializer_class=UserSerializer)
+    @action(detail=False, url_name="me/projects/likes", url_path="me/projects/likes",
+            serializer_class=UserSerializer)
     def projects_likes(self, request, *args, **kwargs):
         instance = self.request.user
         user_ids = instance.projects.values_list("likes", flat=True)
         likes = CustomUser.objects.filter(id__in=user_ids)
         serializer = self.serializer_class(likes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'], url_name='subscribe', url_path='subscribe',
+            serializer_class=UserSubscribeSerializer)
+    def subscribe(self, request, id=None):
+        data = request.data.copy()
+        data['subscriber'] = self.request.user.id
+        data['subscription'] = id
+
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, url_name='me/subscribers/', url_path='me/subscribers',
+            serializer_class=UserSerializer)
+    def subscribers(self, request, *args, **kwargs):
+        instance = self.request.user
+        subscribers = instance.subscribers.all()
+        serializer = self.serializer_class(subscribers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -149,7 +178,8 @@ class ProjectViewSet(viewsets.GenericViewSet):
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, url_name='detail', url_path='detail', serializer_class=ProjectsDetailSerializer)
+    @action(detail=True, url_name='detail', url_path='detail',
+            serializer_class=ProjectsDetailSerializer)
     def project_detail(self, request, pk=None):
         project = self.get_object()
         serializer = self.serializer_class(project)
