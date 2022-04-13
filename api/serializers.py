@@ -9,7 +9,9 @@ from .models import (
     ProjectLike,
     Category,
     ProjectComment,
-    ProjectNew
+    ProjectNew,
+    UserSubscribe,
+    ProjectOffer
 )
 
 
@@ -35,6 +37,20 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
         fields = ('email', 'password')
 
 
+class UserLikeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserLike
+        fields = ('like_to', 'like_from')
+
+
+class UserSubscribeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserSubscribe
+        fields = ('subscriber', 'subscription')
+
+
 class ProjectsSerializer(serializers.ModelSerializer):
     categories = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
 
@@ -58,13 +74,6 @@ class ProjectsDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = '__all__'
-
-
-class UserLikeSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = UserLike
-        fields = ('like_to', 'like_from')
 
 
 class ProjectLikeSerializer(serializers.ModelSerializer):
