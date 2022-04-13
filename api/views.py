@@ -227,6 +227,21 @@ class ProjectViewSet(viewsets.GenericViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=True, methods=['post'], url_name='offers', url_path='offers',
+            serializer_class=ProjectOfferSerializer)
+    def offers(self, request, pk=None):
+        data = request.data.copy()
+        data['user'] = self.request.user.id
+        data['project'] = pk
+
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class CallbackAPIView(CreateAPIView):
     queryset = Callback.objects.all()
