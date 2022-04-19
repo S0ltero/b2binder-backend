@@ -33,6 +33,18 @@ from .serializers import (
 )
 
 
+@method_decorator(name="retrieve", decorator=swagger_auto_schema(
+    operation_id="GetUser",
+    operation_description="Получение пользователя с указанным `id`"
+))
+@method_decorator(name="list", decorator=swagger_auto_schema(
+    operation_id="GetUsersList",
+    operation_description="Получение списка пользователей"
+))
+@method_decorator(name="create", decorator=swagger_auto_schema(
+    operation_id="CreateUser",
+    operation_description="Создание пользователя"
+))
 @method_decorator(name="destroy", decorator=swagger_auto_schema(auto_schema=None))
 @method_decorator(name="update", decorator=swagger_auto_schema(auto_schema=None))
 @method_decorator(name="partial_update", decorator=swagger_auto_schema(auto_schema=None))
@@ -141,6 +153,26 @@ class UserViewSet(DjoserUserViewSet):
         subscribers = instance.subscribers.all()
         serializer = self.serializer_class(subscribers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(method="put", auto_schema=None)
+    @swagger_auto_schema(
+        method="patch",
+        operation_id="UpdateCurrentUser",
+        operation_description="Обновление текущего пользователя"
+    )
+    @swagger_auto_schema(
+        method="get",
+        operation_id="GetCurrentUser",
+        operation_description="Получение текущего пользователя"
+    )
+    @swagger_auto_schema(
+        method="delete",
+        operation_id="DeleteCurrentUser",
+        operation_description="Удаление текущего пользователя"
+    )
+    @action(["get", "put", "patch", "delete"], detail=False)
+    def me(self, request, *args, **kwargs):
+        return super().me(request, *args, **kwargs)
 
 
 class ProjectViewSet(viewsets.GenericViewSet):
