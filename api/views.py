@@ -1,9 +1,13 @@
+from django.utils.decorators import method_decorator
+
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
+
+from drf_yasg.utils import swagger_auto_schema
 
 from djoser.views import UserViewSet as DjoserUserViewSet
 
