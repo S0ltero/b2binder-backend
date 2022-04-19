@@ -37,7 +37,9 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
 
     class Meta:
         model = CustomUser
-        fields = "__all__"
+        exclude = ("last_login", "date_joined",
+                   "is_superuser", "is_staff", "is_active",
+                   "groups", "user_permissions")
 
     def validate_password(self, value):
         try:
