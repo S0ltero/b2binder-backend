@@ -60,19 +60,25 @@ class UserViewSet(DjoserUserViewSet):
     queryset = CustomUser
     permission_classes = (IsAuthenticated, )
 
-    @action(detail=True, methods=['post'], url_name='likes', url_path='likes',
+    @action(detail=True, methods=['post', 'get'], url_name='likes', url_path='likes',
             serializer_class=UserLikeSerializer)
     def likes(self, request, id=None):
-        data = request.data.copy()
-        data["like_from"] = self.request.user.id
-        data["like_to"] = id
+        if self.request.method == "GET":
+            liked_users = self.request.user.likes_to.values_list("id")
+            users = self.queryset.objects.exclude(id__in=liked_users)
+            serializer = UserSerializer(users, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        elif self.request.method == "POST":
+            data = request.data.copy()
+            data["like_from"] = self.request.user.id
+            data["like_to"] = id
 
-        serializer = self.serializer_class(data=data)
-        if serializer.is_valid(raise_exception=False):
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer = self.serializer_class(data=data)
+            if serializer.is_valid(raise_exception=False):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(operation_id="GetMyLikes")
     @action(detail=False, url_name="me/likes/to", url_path="me/likes/to",
