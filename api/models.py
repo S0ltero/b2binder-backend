@@ -29,18 +29,18 @@ class CustomUser(AbstractUser):
     authorization = models.FileField(verbose_name='Авторизация', blank=True, null=True)
     country = models.CharField(verbose_name='Страна', max_length=100)
     city = models.CharField(verbose_name='Город', max_length=100)
-    interest = ArrayField(models.CharField(max_length=100), verbose_name='Интересы', blank=True, default=list)
-    looking = ArrayField(models.CharField(max_length=100), verbose_name='Кого мы ищем', blank=True, default=list)
+    interest = ArrayField(models.CharField(max_length=100), verbose_name='Интересы', default=list)
+    looking = ArrayField(models.CharField(max_length=100), verbose_name='Кого мы ищем', default=list)
 
-    first_name = models.CharField(verbose_name='Имя', max_length=100, blank=True)
-    last_name = models.CharField(verbose_name='Фамилия', max_length=100, blank=True)
+    first_name = models.CharField(verbose_name='Имя', max_length=100)
+    last_name = models.CharField(verbose_name='Фамилия', max_length=100)
     middle_name = models.CharField(verbose_name='Отчество', max_length=100, blank=True)
 
     chats = models.ManyToManyField(Chat, through='ChatMember', blank=True, verbose_name='Чаты')
 
-    company_name = models.CharField(verbose_name='Название компании', max_length=100, blank=True)
-    company_description = models.TextField(verbose_name='Описание компании', blank=True)
-    company_type = models.CharField(verbose_name='Тип компании', max_length=100, blank=True)
+    company_name = models.CharField(verbose_name='Название компании', max_length=100)
+    company_description = models.TextField(verbose_name='Описание компании')
+    company_type = models.CharField(verbose_name='Тип компании', max_length=100)
 
     likes_from = models.ManyToManyField('self', related_name='likes_to', through='UserLike', symmetrical=False)
     like_projects = models.ManyToManyField('Project', related_name='likes', through='ProjectLike', symmetrical=False)
