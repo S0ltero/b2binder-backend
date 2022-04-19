@@ -60,6 +60,16 @@ class UserViewSet(DjoserUserViewSet):
     queryset = CustomUser
     permission_classes = (IsAuthenticated, )
 
+    @swagger_auto_schema(
+        method="post",
+        operation_id="CreateUserLike",
+        operation_description="Создание оценки пользователя"
+    )
+    @swagger_auto_schema(
+        method="get",
+        operation_id="GetUsersForLike",
+        operation_description="Получение списка пользователей для оценки"
+    )
     @action(detail=True, methods=['post', 'get'], url_name='likes', url_path='likes',
             serializer_class=UserLikeSerializer)
     def likes(self, request, id=None):
