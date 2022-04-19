@@ -48,6 +48,7 @@ class UserViewSet(DjoserUserViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(operation_id="GetMyLikes")
     @action(detail=False, url_name="me/likes/to", url_path="me/likes/to",
             serializer_class=UserSerializer)
     def likes_to(self, request, *args, **kwargs):
@@ -59,6 +60,7 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(operation_id="GetMeLikes")
     @action(detail=False, url_name="me/likes/from", url_path="me/likes/from",
             serializer_class=UserSerializer)
     def likes_from(self, request, *args, **kwargs):
@@ -70,6 +72,7 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(operation_id="GetMyProjectLikes")
     @action(detail=False, url_name="me/likes/projects", url_path="me/likes/projects",
             serializer_class=ProjectsSerializer)
     def like_projects(self, request, *args, **kwargs):
@@ -81,6 +84,7 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(operation_id="GetMeProjectLikes")
     @action(detail=False, url_name="me/projects/likes", url_path="me/projects/likes",
             serializer_class=UserSerializer)
     def projects_likes(self, request, *args, **kwargs):
@@ -93,6 +97,7 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(operation_id="CreateSubscribe")
     @action(detail=True, methods=['post'], url_name='subscribe', url_path='subscribe',
             serializer_class=UserSubscribeSerializer)
     def subscribe(self, request, id=None):
@@ -110,6 +115,7 @@ class UserViewSet(DjoserUserViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(operation_id="GetMySubscribers")
     @action(detail=False, url_name='me/subscribers/', url_path='me/subscribers',
             serializer_class=UserSerializer)
     def subscribers(self, request, *args, **kwargs):
@@ -155,6 +161,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
             self.permission_classes = [AllowAny]
         return super().get_permissions()
 
+    @swagger_auto_schema(operation_id="GetListProjects")
     def list(self, request, *args, **kwargs):
         """
         Получение списка всех проектов
@@ -166,6 +173,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(projects, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(operation_id="GetProject")
     def retrieve(self, request, pk):
         """
         Получение проекта с указанным `pk`
@@ -177,6 +185,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(operation_id="UpdateProject")
     def partial_update(self, request, pk):
         """
         Обновление проекта с указанным `pk`
@@ -189,6 +198,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(operation_id="CreateProject")
     def create(self, request, *args, **kwargs):
         """
         Создание проекта
@@ -203,6 +213,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(operation_id="DeleteProject")
     def destroy(self, request, pk):
         """
         Удаление проекта с указанным `pk`
@@ -211,6 +222,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @swagger_auto_schema(operation_id="GetProjectDetail")
     @action(detail=True, url_name='detail', url_path='detail',
             serializer_class=ProjectsDetailSerializer)
     def project_detail(self, request, pk=None):
@@ -221,6 +233,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(operation_id="CreateProjectLike")
     @action(detail=True, methods=['post'], url_name='likes', url_path='likes',
             serializer_class=ProjectLikeSerializer)
     def project_likes(self, request, pk=None):
@@ -238,6 +251,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(operation_id="CreateProjectComment")
     @action(detail=True, methods=['post'], url_name='comments', url_path='comments',
             serializer_class=ProjectCommentSerializer)
     def comments(self, request, pk=None):
@@ -269,6 +283,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(operation_id="CreateProjectOffer")
     @action(detail=True, methods=['post'], url_name='offers', url_path='offers',
             serializer_class=ProjectOfferSerializer)
     def offers(self, request, pk=None):
