@@ -177,6 +177,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def partial_update(self, request, pk):
         """
         Обновление проекта с указанным `pk`
         """
