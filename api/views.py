@@ -33,6 +33,17 @@ from .serializers import (
 )
 
 
+@method_decorator(name="destroy", decorator=swagger_auto_schema(auto_schema=None))
+@method_decorator(name="update", decorator=swagger_auto_schema(auto_schema=None))
+@method_decorator(name="partial_update", decorator=swagger_auto_schema(auto_schema=None))
+@method_decorator(name="set_password", decorator=swagger_auto_schema(auto_schema=None))
+@method_decorator(name="set_username", decorator=swagger_auto_schema(auto_schema=None))
+@method_decorator(name="activation", decorator=swagger_auto_schema(auto_schema=None))
+@method_decorator(name="resend_activation", decorator=swagger_auto_schema(auto_schema=None))
+@method_decorator(name="reset_username", decorator=swagger_auto_schema(auto_schema=None))
+@method_decorator(name="reset_password", decorator=swagger_auto_schema(auto_schema=None))
+@method_decorator(name="reset_password_confirm", decorator=swagger_auto_schema(auto_schema=None))
+@method_decorator(name="reset_username_confirm", decorator=swagger_auto_schema(auto_schema=None))
 class UserViewSet(DjoserUserViewSet):
 
     queryset = CustomUser
