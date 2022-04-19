@@ -1,3 +1,6 @@
+from django.contrib.auth.password_validation import validate_password
+from django.core import exceptions as django_exceptions
+
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from djoser.serializers import UserCreateSerializer as DjoserUserCreateSerializer
@@ -34,7 +37,16 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'password')
+        fields = "__all__"
+
+    def validate_password(self, value):
+        try:
+            validate_password(value, CustomUser)
+        except django_exceptions.ValidationError as e:
+            serializer_error = serializers.as_serializer_error(e)
+            raise serializers.ValidationError(serializer_error["non_field_errors"])
+
+        return value
 
 
 class UserLikeSerializer(serializers.ModelSerializer):
