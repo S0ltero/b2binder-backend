@@ -58,8 +58,6 @@ from .serializers import (
 @method_decorator(name="reset_password_confirm", decorator=swagger_auto_schema(auto_schema=None))
 @method_decorator(name="reset_username_confirm", decorator=swagger_auto_schema(auto_schema=None))
 class UserViewSet(DjoserUserViewSet):
-    queryset = CustomUser
-    permission_classes = (IsAuthenticated, )
 
     @swagger_auto_schema(
         method="post",
