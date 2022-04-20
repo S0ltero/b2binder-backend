@@ -169,6 +169,18 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(subscribers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(operation_id="GetMeSubscriptions")
+    @action(detail=False, url_name='me/subscriptions/', url_path='me/subscriptions',
+            serializer_class=UserSerializer)
+    def subscriptions(self, request, *args, **kwargs):
+        """
+        Получение списка моих подписок
+        """
+        instance = self.request.user
+        subscriptions = instance.subscriptions.all()
+        serializer = self.serializer_class(subscriptions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     @swagger_auto_schema(method="put", auto_schema=None)
     @swagger_auto_schema(
         method="patch",
