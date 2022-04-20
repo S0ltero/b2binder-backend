@@ -2,7 +2,7 @@ from django.utils.decorators import method_decorator
 
 from rest_framework import viewsets
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -14,6 +14,7 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from .permissions import IsOwner
 from .models import (
     Project,
+    Category,
     CustomUser,
     Callback,
 )
@@ -392,3 +393,15 @@ class CallbackAPIView(CreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CategoryAPIView(ListAPIView):
+    queryset = Category.objects.all()
+
+    @swagger_auto_schema(operation_id="GetListCategories")
+    def get(self, request, *args, **kwargs):
+        """
+        Получение списка всех категорий
+        """
+        categories = self.queryset.values_list("name")
+        return Response(categories, status=status.HTTP_200_OK)
