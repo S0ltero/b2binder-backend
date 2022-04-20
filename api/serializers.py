@@ -26,6 +26,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    subscribers = serializers.IntegerField(source="subscribers.count", read_only=True)
+    subscriptions = serializers.IntegerField(source="subscriptions.count", read_only=True)
 
     class Meta:
         model = CustomUser
