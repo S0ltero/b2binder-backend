@@ -70,10 +70,12 @@ class UserSubscribeSerializer(serializers.ModelSerializer):
 
 class ProjectsSerializer(serializers.ModelSerializer):
     categories = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
+    country = serializers.CharField(source='user.country', read_only=True)
     current_investments =  serializers.SerializerMethodField()
 
     class Meta:
         model = Project
+        fields = ('id','title', 'country', 'short_description', 'categories',
                   'profit', 'investments', 'current_investments')
 
     def get_current_investments(self, obj):
