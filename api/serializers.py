@@ -1,5 +1,6 @@
 from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions as django_exceptions
+from django.db.models import Sum
 
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
@@ -69,11 +70,14 @@ class UserSubscribeSerializer(serializers.ModelSerializer):
 
 class ProjectsSerializer(serializers.ModelSerializer):
     categories = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
+    current_investments =  serializers.SerializerMethodField()
 
     class Meta:
         model = Project
-        fields = ('id','title', 'short_description', 'categories',
-                  'profit', 'investments')
+                  'profit', 'investments', 'current_investments')
+
+    def get_current_investments(self, obj):
+        return obj.offers.aggregate(Sum('amount'))['amount__sum']
 
 
 class ProjectsCreateSerializer(serializers.ModelSerializer):
