@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django.utils.decorators import method_decorator
 
 from rest_framework import viewsets
@@ -199,6 +201,22 @@ class UserViewSet(DjoserUserViewSet):
     @action(["get", "put", "patch", "delete"], detail=False)
     def me(self, request, *args, **kwargs):
         return super().me(request, *args, **kwargs)
+
+    @action(detail=False, methods=["post"], url_name="validate", url_path="validate",
+            serializer_class=UserCreateSerializer, permission_classes=(AllowAny,))
+    def validate(self, request):
+        fields = request.data.keys()
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=False):
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        errors = [item for item in serializer.errors.items() if item[0] in fields]
+
+        if errors:
+            errors = OrderedDict(errors)
+            return Response(errors, status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ProjectViewSet(viewsets.GenericViewSet):
