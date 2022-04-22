@@ -83,11 +83,10 @@ class ProjectsSerializer(serializers.ModelSerializer):
 
 
 class ProjectsCreateSerializer(serializers.ModelSerializer):
-    categories = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
 
     class Meta:
         model = Project
-        exclude = ('user',)
+        fields = "__all__"
 
 
 class ProjectOfferSerializer(serializers.ModelSerializer):
