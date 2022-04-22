@@ -68,7 +68,7 @@ class UserSubscribeSerializer(serializers.ModelSerializer):
         fields = ('subscriber', 'subscription')
 
 
-class ProjectsSerializer(serializers.ModelSerializer):
+class ProjectSerializer(serializers.ModelSerializer):
     categories = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
     country = serializers.CharField(source='user.country', read_only=True)
     current_investments =  serializers.SerializerMethodField()
@@ -81,7 +81,7 @@ class ProjectsSerializer(serializers.ModelSerializer):
         return obj.offers.aggregate(Sum('amount', default=0))['amount__sum']
 
 
-class ProjectsCreateSerializer(serializers.ModelSerializer):
+class ProjectCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
@@ -95,7 +95,7 @@ class ProjectOfferSerializer(serializers.ModelSerializer):
         fields = ('user', 'project', 'amount')
 
 
-class ProjectsDetailSerializer(serializers.ModelSerializer):
+class ProjectDetailSerializer(serializers.ModelSerializer):
     categories = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
     offers = ProjectOfferSerializer(read_only=True, many=True)
 

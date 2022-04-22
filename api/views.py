@@ -19,9 +19,9 @@ from .models import (
     Callback,
 )
 from .serializers import (
-    ProjectsSerializer,
-    ProjectsCreateSerializer,
-    ProjectsDetailSerializer,
+    ProjectSerializer,
+    ProjectCreateSerializer,
+    ProjectDetailSerializer,
     UserSerializer,
     UserCreateSerializer,
     CallbackCreateSerializer,
@@ -115,7 +115,7 @@ class UserViewSet(DjoserUserViewSet):
 
     @swagger_auto_schema(operation_id="GetMyProjectLikes")
     @action(detail=False, url_name="me/likes/projects", url_path="me/likes/projects",
-            serializer_class=ProjectsSerializer)
+            serializer_class=ProjectSerializer)
     def like_projects(self, request, *args, **kwargs):
         """
         Получение списка оцененных мной проектов
@@ -203,7 +203,7 @@ class UserViewSet(DjoserUserViewSet):
 
 class ProjectViewSet(viewsets.GenericViewSet):
     queryset = Project
-    serializer_class = ProjectsSerializer
+    serializer_class = ProjectSerializer
     permission_classes = (AllowAny,)
 
     def get_queryset(self):
@@ -221,9 +221,9 @@ class ProjectViewSet(viewsets.GenericViewSet):
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
-            return ProjectsCreateSerializer
+            return ProjectCreateSerializer
         else:
-            return ProjectsSerializer
+            return ProjectSerializer
 
     def get_permissions(self):
         if self.action == "create":
@@ -298,7 +298,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
 
     @swagger_auto_schema(operation_id="GetProjectDetail")
     @action(detail=True, url_name='detail', url_path='detail',
-            serializer_class=ProjectsDetailSerializer)
+            serializer_class=ProjectDetailSerializer)
     def project_detail(self, request, pk=None):
         """
         Получение детальной информации о проекте с указанным `pk`
