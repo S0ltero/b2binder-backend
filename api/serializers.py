@@ -75,8 +75,7 @@ class ProjectsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ('id','title', 'country', 'image', 'short_description',
-                  'categories', 'profit', 'investments', 'current_investments')
+        exclude = ("description", "user")
 
     def get_current_investments(self, obj):
         return obj.offers.aggregate(Sum('amount', default=0))['amount__sum']
