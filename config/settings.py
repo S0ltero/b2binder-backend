@@ -77,6 +77,7 @@ AUTH_USER_MODEL = 'api.CustomUser'
 DJOSER = {
     "USER_CREATE_PASSWORD_RETYPE": True,
     "LOGIN_FIELD": "email",
+    "HIDE_USERS": False,
     "SERIALIZERS": {
         "user": "api.serializers.UserSerializer",
         "user_create": "api.serializers.UserCreateSerializer",
