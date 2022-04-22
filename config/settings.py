@@ -43,8 +43,7 @@ CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://localhost:1337"]
 
 # General
 APPEND_SLASH = True
-LANGUAGE_CODE = "ru"
-LOGIN_REDIRECT_URL = "/"
+LANGUAGE_CODE = "ru-RU"
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
