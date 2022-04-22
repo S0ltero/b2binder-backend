@@ -96,7 +96,7 @@ REST_FRAMEWORK = {
 }
 
 # Static files (CSS, JavaScript, Images)
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = []
 STATIC_URL = "/static/"
 STATICFILES_FINDERS = (
@@ -105,7 +105,7 @@ STATICFILES_FINDERS = (
 )
 
 # Media files
-MEDIA_ROOT = BASE_DIR / "mediafiles"
+MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
 MEDIA_URL = "/media/"
 
 TEMPLATES = [
