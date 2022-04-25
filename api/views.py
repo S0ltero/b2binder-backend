@@ -291,7 +291,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema(operation_id="CreateProject")
+    @swagger_auto_schema(operation_id="CreateProject", request_body=ProjectCreateSerializer)
     def create(self, request, *args, **kwargs):
         """
         Создание проекта
