@@ -8,6 +8,7 @@ from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser
 
 from drf_yasg.utils import swagger_auto_schema
 
@@ -223,6 +224,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
     queryset = Project
     serializer_class = ProjectSerializer
     permission_classes = (AllowAny,)
+    parser_classes=(MultiPartParser,)
 
     def get_queryset(self):
         queryset = Project.objects.all()
