@@ -29,8 +29,8 @@ class CustomUser(AbstractUser):
     authorization = models.FileField(verbose_name='Авторизация', blank=True, null=True)
     country = models.CharField(verbose_name='Страна', max_length=100)
     city = models.CharField(verbose_name='Город', max_length=100)
-    interest = ArrayField(models.CharField(max_length=100), verbose_name='Интересы', default=list)
-    looking = ArrayField(models.CharField(max_length=100), verbose_name='Кого мы ищем', default=list)
+    interest = ArrayField(models.CharField(max_length=100), verbose_name='Интересы')
+    looking = ArrayField(models.CharField(max_length=100), verbose_name='Кого мы ищем')
 
     first_name = models.CharField(verbose_name='Имя', max_length=100)
     last_name = models.CharField(verbose_name='Фамилия', max_length=100)
