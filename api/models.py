@@ -24,8 +24,7 @@ class CustomUser(AbstractUser):
         },
     )
 
-    photo = models.ImageField(verbose_name='Фото')
-    profile_type = models.CharField(verbose_name='Тип профиля', max_length=100)
+    photo = models.ImageField(verbose_name='Фото', blank=True, null=True)
     authorization = models.FileField(verbose_name='Авторизация', blank=True, null=True)
     country = models.CharField(verbose_name='Страна', max_length=100)
     city = models.CharField(verbose_name='Город', max_length=100)
