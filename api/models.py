@@ -6,12 +6,6 @@ from django.contrib.auth.models import AbstractUser
 from .managers import UserManager
 
 
-class Chat(models.Model):
-    class Meta:
-        verbose_name = 'Чат'
-        verbose_name_plural = 'Чаты'
-
-
 class CustomUser(AbstractUser):
     username = None
 
@@ -35,9 +29,7 @@ class CustomUser(AbstractUser):
     last_name = models.CharField(verbose_name='Фамилия', max_length=100)
     middle_name = models.CharField(verbose_name='Отчество', max_length=100, blank=True)
 
-    chats = models.ManyToManyField(Chat, through='ChatMember', blank=True, verbose_name='Чаты')
-
-    company_name = models.CharField(verbose_name='Название компании', max_length=100)
+    company_name = models.TextField(verbose_name='Название компании')
     company_description = models.TextField(verbose_name='Описание компании')
     company_type = models.CharField(verbose_name='Тип компании', max_length=100)
 
@@ -83,32 +75,6 @@ class UserSubscribe(models.Model):
 
     def __str__(self):
         return f'{self.subscriber}, {self.subscription}'
-
-
-
-class ChatMember(models.Model):
-    chat = models.ForeignKey(Chat, related_name='members', on_delete=models.CASCADE, verbose_name='Чат')
-    user = models.ForeignKey(CustomUser, related_name='members', on_delete=models.CASCADE, verbose_name='Участник чата')
-
-    class Meta:
-        verbose_name = 'Участник чата'
-        verbose_name_plural = 'Участники чата'
-
-    def __str__(self):
-        return f'{self.user} участник {self.chat}'
-
-
-class Message(models.Model):
-    chat = models.ForeignKey(Chat, related_name='messages', on_delete=models.CASCADE, verbose_name='Чат')
-    member = models.ForeignKey(CustomUser, related_name='messages', on_delete=models.CASCADE,
-                               verbose_name='Участник чата')
-
-    class Meta:
-        verbose_name = 'Сообщение'
-        verbose_name_plural = 'Сообщения'
-
-    def __str__(self):
-        return f'От {self.member} в {self.chat}'
 
 
 class Category(models.Model):
