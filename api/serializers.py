@@ -97,8 +97,16 @@ class ProjectOfferSerializer(serializers.ModelSerializer):
         fields = ('user', 'project', 'amount')
 
 
+class ProjectCommentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProjectComment
+        fields = ('user', 'project', 'text')
+
+
 class ProjectDetailSerializer(serializers.ModelSerializer):
     categories = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
+    comments = ProjectCommentSerializer(read_only=True, many=True)
     offers = ProjectOfferSerializer(read_only=True, many=True)
 
     class Meta:
