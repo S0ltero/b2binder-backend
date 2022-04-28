@@ -107,6 +107,7 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
     )
     comments = ProjectCommentSerializer(read_only=True, many=True)
     offers = ProjectOfferSerializer(read_only=True, many=True)
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Project
