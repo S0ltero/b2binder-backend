@@ -133,6 +133,22 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(operation_id="GetMyProjects")
+    @action(
+        detail=False,
+        methods=["get"],
+        url_name="me/projects",
+        url_path="me/projects",
+        serializer_class=ProjectSerializer
+    )
+    def me_projects(self, request, *args, **kwargs):
+        """
+        Получение списка моих проектов
+        """
+        projects = request.user.projects.all()
+        serializer = self.serializer_class(projects, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     @swagger_auto_schema(operation_id="GetMyLikes")
     @action(
         detail=False,
