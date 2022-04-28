@@ -141,7 +141,7 @@ class UserViewSet(DjoserUserViewSet):
         url_path="me/projects",
         serializer_class=ProjectSerializer
     )
-    def me_projects(self, request, *args, **kwargs):
+    def projects(self, request, *args, **kwargs):
         """
         Получение списка моих проектов
         """
