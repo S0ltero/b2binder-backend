@@ -285,6 +285,10 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(self.get_object())
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(
+        operation_id="ValidateUserData",
+        operation_description="Предварительная валидация данных пользователя",
+    )
     @action(
         detail=False,
         methods=["post"],
