@@ -84,6 +84,10 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class ProjectCreateSerializer(serializers.ModelSerializer):
+    categories = serializers.SlugRelatedField(
+        queryset=Category.objects.all(), slug_field="name", many=True
+    )
+
     class Meta:
         model = Project
         fields = "__all__"
