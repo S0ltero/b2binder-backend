@@ -25,6 +25,7 @@ from .models import (
 from .serializers import (
     ProjectSerializer,
     ProjectCreateSerializer,
+    ProjectOfferCreateSerializer,
     ProjectDetailSerializer,
     UserSerializer,
     UserDetailSerializer,
@@ -499,6 +500,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         methods=["post"],
         url_name="offers",
         url_path="offers",
+        serializer_class=ProjectOfferCreateSerializer,
         parser_classes=(JSONParser,),
     )
     def offers(self, request, pk=None):
