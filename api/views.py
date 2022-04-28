@@ -9,6 +9,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
+from rest_framework.pagination import PageNumberPagination
 
 from drf_yasg.utils import swagger_auto_schema
 
@@ -65,32 +66,39 @@ class UserViewSet(DjoserUserViewSet):
     @swagger_auto_schema(
         method="post",
         operation_id="CreateUserLike",
-        operation_description="Создание оценки пользователя"
+        operation_description="Создание оценки пользователя",
+        request_body=None
     )
-    @swagger_auto_schema(
-        method="get",
-        operation_id="GetUsersForLike",
-        operation_description="Получение списка пользователей для оценки"
-    )
-    @action(detail=True, methods=['post', 'get'], url_name='likes', url_path='likes',
+    @action(detail=True, methods=['post'], url_name='likes', url_path='likes',
             serializer_class=UserLikeSerializer)
     def likes(self, request, id=None):
-        if self.request.method == "GET":
-            liked_users = self.request.user.likes_to.values_list("id")
-            users = self.queryset.objects.exclude(id__in=liked_users)
-            serializer = UserSerializer(users, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        elif self.request.method == "POST":
-            data = request.data.copy()
-            data["like_from"] = self.request.user.id
-            data["like_to"] = id
+        data = request.data.copy()
+        data["like_from"] = self.request.user.id
+        data["like_to"] = id
 
-            serializer = self.serializer_class(data=data)
-            if serializer.is_valid(raise_exception=False):
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(operation_id="GetUserForLike")
+    @action(detail=False, methods=['get'], url_name="me/likes", url_path="me/likes",
+            serializer_class=UserSerializer, pagination_class=PageNumberPagination)
+    def me_likes(self, request, *args, **kwargs):
+        """
+        Получение списка пользователей для оценки
+        """
+        liked_users = self.request.user.likes_to.values_list("id")
+        users = self.queryset.exclude(id__in=liked_users)
+        page = self.paginate_queryset(users)
+        if page:
+            serializer = self.serializer_class(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.serializer_class(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(operation_id="GetMyLikes")
     @action(detail=False, url_name="me/likes/to", url_path="me/likes/to",
