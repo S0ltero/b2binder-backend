@@ -9,20 +9,22 @@ from drf_yasg import openapi
 from api.views import UserViewSet
 
 router = DefaultRouter()
-router.register(r'users', UserViewSet, basename='users')
+router.register(r"users", UserViewSet, basename="users")
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="B2binder API",
-      default_version='v1'
-   ),
-   public=True,
+    openapi.Info(title="B2binder API", default_version="v1"),
+    public=True,
 )
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('api/', include('api.urls')),
-    path('api/auth/', include(router.urls)),
-    path('api/auth/', include('djoser.urls.authtoken')),
-    path('redoc/', login_required(schema_view.with_ui('redoc', cache_timeout=0)), name='schema-redoc'),
+    path("api/", include("api.urls")),
+    path("api/auth/", include(router.urls)),
+    path("api/auth/", include("djoser.urls.authtoken")),
+    path("chat/", include("chat.urls")),
+    path(
+        "redoc/",
+        login_required(schema_view.with_ui("redoc", cache_timeout=0)),
+        name="schema-redoc",
+    ),
 ]
