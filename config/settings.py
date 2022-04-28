@@ -47,6 +47,7 @@ APPEND_SLASH = True
 LANGUAGE_CODE = "ru-RU"
 LOGIN_REDIRECT_URL = "/admin/login"
 LOGIN_URL = "/admin/login"
+AUTH_USER_MODEL = "api.CustomUser"
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -56,7 +57,7 @@ USE_L10N = True
 USE_TZ = True
 TIME_ZONE = "Europe/Moscow"
 
-#Cors
+# Cors
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
@@ -72,8 +73,6 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'api.CustomUser'
-
 # Djoser settings
 DJOSER = {
     "USER_CREATE_PASSWORD_RETYPE": True,
@@ -86,7 +85,6 @@ DJOSER = {
         "current_user": "api.serializers.UserSerializer",
         "token": "api.serializers.TokenSerializer"
     },
-
 }
 
 # RestFramework settings
