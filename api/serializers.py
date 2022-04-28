@@ -99,6 +99,13 @@ class ProjectOfferSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+
+class ProjectOfferCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectOffer
+        fields = "__all__"
+
+
 class ProjectCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectComment
