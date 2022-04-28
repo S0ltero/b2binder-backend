@@ -25,6 +25,7 @@ from .models import (
 from .serializers import (
     ProjectSerializer,
     ProjectCreateSerializer,
+    ProjectOfferSerializer,
     ProjectOfferCreateSerializer,
     ProjectDetailSerializer,
     UserSerializer,
@@ -36,7 +37,6 @@ from .serializers import (
     ProjectNewSerializer,
     ProjectCommentSerializer,
     UserSubscribeSerializer,
-    ProjectOfferSerializer,
 )
 
 
