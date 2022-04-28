@@ -98,6 +98,11 @@ class ProjectOfferSerializer(serializers.ModelSerializer):
         model = ProjectOffer
         fields = "__all__"
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        project = ProjectSerializer(instance.project).data
+        data.update(project)
+        return data
 
 
 class ProjectOfferCreateSerializer(serializers.ModelSerializer):
