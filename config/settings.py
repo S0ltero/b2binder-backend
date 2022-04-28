@@ -83,7 +83,7 @@ DJOSER = {
         "user_create": "api.serializers.UserCreateSerializer",
         "user_create_password_retype": "api.serializers.UserCreateSerializer",
         "current_user": "api.serializers.UserSerializer",
-        "token": "api.serializers.TokenSerializer"
+        "token": "api.serializers.TokenSerializer",
     },
 }
 
