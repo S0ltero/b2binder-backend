@@ -157,7 +157,7 @@ class UserViewSet(DjoserUserViewSet):
         url_path="me/offers",
         serializer_class=ProjectOfferSerializer
     )
-    def me_offers(self, request, *args, **kwargs):
+    def offers(self, request, *args, **kwargs):
         """
         Получение списка моих предложений
         """
