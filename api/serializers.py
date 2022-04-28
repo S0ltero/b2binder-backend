@@ -15,20 +15,21 @@ from .models import (
     ProjectComment,
     ProjectNew,
     UserSubscribe,
-    ProjectOffer
+    ProjectOffer,
 )
 
 
 class CategorySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Category
-        fields = ('name', )
+        fields = ("name",)
 
 
 class UserSerializer(serializers.ModelSerializer):
     subscribers = serializers.IntegerField(source="subscribers.count", read_only=True)
-    subscriptions = serializers.IntegerField(source="subscriptions.count", read_only=True)
+    subscriptions = serializers.IntegerField(
+        source="subscriptions.count", read_only=True
+    )
     count_projects = serializers.IntegerField(source="projects.count", read_only=True)
     count_offers = serializers.IntegerField(source="offers.count", read_only=True)
 
@@ -39,7 +40,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserCreateSerializer(DjoserUserCreateSerializer):
-
     class Meta:
         model = CustomUser
         exclude = ("last_login", "date_joined",
@@ -57,88 +57,84 @@ class UserCreateSerializer(DjoserUserCreateSerializer):
 
 
 class UserLikeSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = UserLike
         fields = "__all__"
 
 
 class UserSubscribeSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = UserSubscribe
         fields = "__all__"
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    categories = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
-    country = serializers.CharField(source='user.country', read_only=True)
-    current_investments =  serializers.SerializerMethodField()
+    categories = serializers.SlugRelatedField(
+        slug_field="name", read_only=True, many=True
+    )
+    country = serializers.CharField(source="user.country", read_only=True)
+    current_investments = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
         exclude = ("description", "user")
 
     def get_current_investments(self, obj):
-        return obj.offers.aggregate(Sum('amount', default=0))['amount__sum']
+        return obj.offers.aggregate(Sum("amount", default=0))["amount__sum"]
 
 
 class ProjectCreateSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Project
         fields = "__all__"
 
 
 class ProjectOfferSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = ProjectOffer
         fields = "__all__"
 
 
 class ProjectCommentSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = ProjectComment
         fields = "__all__"
 
 
 class ProjectDetailSerializer(serializers.ModelSerializer):
-    categories = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
+    categories = serializers.SlugRelatedField(
+        slug_field="name", read_only=True, many=True
+    )
     comments = ProjectCommentSerializer(read_only=True, many=True)
     offers = ProjectOfferSerializer(read_only=True, many=True)
 
     class Meta:
         model = Project
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ProjectLikeSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = ProjectLike
         fields = "__all__"
 
 
 class ProjectNewSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = ProjectNew
         fields = "__all__"
 
 
 class TokenSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(source='user.id')
-    auth_token = serializers.CharField(source='key')
+    id = serializers.CharField(source="user.id")
+    auth_token = serializers.CharField(source="key")
 
     class Meta:
         model = Token
-        fields = ('id', 'auth_token')
+        fields = ("id", "auth_token")
 
 
 class CallbackCreateSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Callback
-        fields = '__all__'
+        fields = "__all__"
