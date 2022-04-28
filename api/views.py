@@ -271,6 +271,10 @@ class UserViewSet(DjoserUserViewSet):
     def me(self, request, *args, **kwargs):
         return super().me(request, *args, **kwargs)
 
+    @swagger_auto_schema(
+        operation_id="GetUserDetail",
+        operation_description="Получение детальной информации пользователя с `id`",
+    )
     @action(
         detail=True,
         url_name="detail",
