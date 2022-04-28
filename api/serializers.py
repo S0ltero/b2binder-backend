@@ -125,6 +125,10 @@ class ProjectNewSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class UserDetailSerializer(UserSerializer):
+    projects = ProjectSerializer(many=True, read_only=True)
+
+
 class TokenSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="user.id")
     auth_token = serializers.CharField(source="key")
