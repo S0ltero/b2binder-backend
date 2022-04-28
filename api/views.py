@@ -8,7 +8,7 @@ from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser, JSONParser
 from rest_framework.pagination import PageNumberPagination
 
 from drf_yasg.utils import swagger_auto_schema
@@ -432,6 +432,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         url_name="likes",
         url_path="likes",
         serializer_class=ProjectLikeSerializer,
+        parser_classes=(JSONParser,),
     )
     def project_likes(self, request, pk=None):
         """
@@ -455,6 +456,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         url_name="comments",
         url_path="comments",
         serializer_class=ProjectCommentSerializer,
+        parser_classes=(JSONParser,),
     )
     def comments(self, request, pk=None):
         """
@@ -477,6 +479,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         url_name="news",
         url_path="news",
         serializer_class=ProjectNewSerializer,
+        parser_classes=(JSONParser,),
     )
     def news(self, request, pk=None):
         data = request.data.copy()
@@ -496,7 +499,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         methods=["post"],
         url_name="offers",
         url_path="offers",
-        serializer_class=ProjectOfferSerializer,
+        parser_classes=(JSONParser,),
     )
     def offers(self, request, pk=None):
         """
