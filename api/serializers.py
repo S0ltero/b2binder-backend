@@ -121,13 +121,6 @@ class ProjectLikeSerializer(serializers.ModelSerializer):
         fields = ('user', 'project')
 
 
-class ProjectCommentSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = ProjectComment
-        fields = ('user', 'project', 'text')
-
-
 class ProjectNewSerializer(serializers.ModelSerializer):
 
     class Meta:
