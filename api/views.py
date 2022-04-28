@@ -27,6 +27,7 @@ from .serializers import (
     ProjectCreateSerializer,
     ProjectDetailSerializer,
     UserSerializer,
+    UserDetailSerializer,
     UserCreateSerializer,
     CallbackCreateSerializer,
     UserLikeSerializer,
@@ -269,6 +270,16 @@ class UserViewSet(DjoserUserViewSet):
     @action(["get", "put", "patch", "delete"], detail=False)
     def me(self, request, *args, **kwargs):
         return super().me(request, *args, **kwargs)
+
+    @action(
+        detail=True,
+        url_name="detail",
+        url_path="detail", 
+        serializer_class=UserDetailSerializer
+    )
+    def qdetail(self, request, id=None):
+        serializer = self.serializer_class(self.get_object())
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(
         detail=False,
