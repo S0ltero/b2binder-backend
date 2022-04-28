@@ -141,6 +141,7 @@ class ProjectLike(models.Model):
     class Meta:
         verbose_name = "Оценка проекту"
         verbose_name_plural = "Оценки проектам"
+        unique_together = ("user", "project")
 
     def __str__(self):
         return f"{self.user} оценил {self.project}"
