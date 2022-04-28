@@ -60,14 +60,14 @@ class UserLikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserLike
-        fields = ('like_to', 'like_from')
+        fields = "__all__"
 
 
 class UserSubscribeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserSubscribe
-        fields = ('subscriber', 'subscription')
+        fields = "__all__"
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -94,14 +94,14 @@ class ProjectOfferSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectOffer
-        fields = ('user', 'project', 'amount')
+        fields = "__all__"
 
 
 class ProjectCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectComment
-        fields = ('user', 'project', 'text')
+        fields = "__all__"
 
 
 class ProjectDetailSerializer(serializers.ModelSerializer):
@@ -118,14 +118,14 @@ class ProjectLikeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectLike
-        fields = ('user', 'project')
+        fields = "__all__"
 
 
 class ProjectNewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectNew
-        fields = ('user', 'project', 'text')
+        fields = "__all__"
 
 
 class TokenSerializer(serializers.ModelSerializer):
