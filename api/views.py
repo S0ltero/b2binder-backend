@@ -122,8 +122,9 @@ class UserViewSet(DjoserUserViewSet):
         """
         Получение списка пользователей для оценки
         """
-        liked_users = self.request.user.likes_to.values_list("id")
+        liked_users = self.request.user.likes_to.values_list("id", flat=True)
         users = self.queryset.exclude(id__in=liked_users)
+        users = users.exclude(id=request.user.id)
         page = self.paginate_queryset(users)
         if page:
             serializer = self.serializer_class(page, many=True)
