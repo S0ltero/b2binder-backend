@@ -1,13 +1,32 @@
 version: '3.8'
 
 services:
+  ws:
+    build: ./
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             daphne config.asgi:application -b 0.0.0.0"
+    ports:
+      - 5432
+    expose:
+      - 8000
+    volumes:
+      - ./:/home/app
+      - static_volume:/home/app/staticfiles
+      - media_volume:/home/app/mediafiles
+    env_file:
+      - ./.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   web:
     build: ./
     command: >
       sh -c "python manage.py collectstatic --noinput &&
-             gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+             gunicorn config.wsgi:application -b 0.0.0.0:8001"
+    ports:
+      - 5432
     expose:
-      - 8000
+      - 8001
     volumes:
       - ./:/home/app
       - static_volume:/home/app/staticfiles
@@ -21,10 +40,12 @@ services:
     volumes:
       - static_volume:/app/web/staticfiles
       - media_volume:/app/web/mediafiles
+      - ./nginx/:/etc/nginx/conf.d/
     ports:
-      - 1337:80
-    depends_on:
-      - web
+      - 8000:80
+      - 8001:80
+  redis:
+    image: redis:alpine
 
 volumes:
   static_volume:
