@@ -116,7 +116,7 @@ class Project(models.Model):
     investments = models.IntegerField(verbose_name="Инвестиции")
     profit = models.IntegerField(verbose_name="Доход")
     categories = models.ManyToManyField(
-        Category, verbose_name="Категории", related_name="cat_projects", blank=True
+        Category, verbose_name="Категории", related_name="projects", blank=True
     )
 
     class Meta:
