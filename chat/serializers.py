@@ -34,3 +34,24 @@ class ChatSerializer(serializers.ModelSerializer):
         recepient = obj.members.exclude(pk=self.context["scope"]["user"].id).first()
         serializer = UserSerializer(recepient)
         return serializer.data
+
+
+class ChatDetailSerializer(serializers.ModelSerializer):
+    last_message = serializers.SerializerMethodField()
+    messages = MessageSerializer(many=True, read_only=True)
+    recepient = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Chat
+        fields = ("pk", "messages", "last_message", "recepient")
+        depth = 1
+        read_only_fields = ("messages", "last_message", "recepient")
+
+    def get_last_message(self, obj: Chat):
+        return MessageSerializer(obj.messages.order_by("timestamp").last()).data
+
+    def get_recepient(self, obj: Chat):
+        print(self.context)
+        recepient = obj.members.exclude(pk=self.context["scope"]["user"].id).first()
+        serializer = UserSerializer(recepient)
+        return serializer.data
