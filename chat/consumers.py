@@ -162,3 +162,24 @@ class ChatConsumer(ObserverModelInstanceMixin, GenericAsyncAPIConsumer):
     def get_user_chats(self, user: CustomUser):
         serializer = ChatSerializer(user.chats, many=True, context={"scope": self.scope})
         return serializer.data
+
+
+class UserConsumer(GenericAsyncAPIConsumer):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    lookup_field = "pk"
+
+    async def connect(self):
+        user = self.scope["user"]
+        await self.set_user_status(user=user, status=1)
+        await super().connect()
+
+    async def disconnect(self, code):
+        user = self.scope["user"]
+        await self.set_user_status(user=user, status=0)
+        await super().disconnect(code)
+
+    @database_sync_to_async
+    def set_user_status(self, user: CustomUser, status: bool):
+        user.online = status
+        user.save()
