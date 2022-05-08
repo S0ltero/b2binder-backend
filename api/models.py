@@ -44,6 +44,8 @@ class CustomUser(AbstractUser):
         "self", related_name="subscribers", through="UserSubscribe", symmetrical=False
     )
 
+    online = models.BooleanField(verbose_name="Статус")
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ()
 
