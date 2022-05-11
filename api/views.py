@@ -1,7 +1,5 @@
 from collections import OrderedDict
 
-from django.utils.decorators import method_decorator
-
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView
@@ -10,8 +8,6 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, JSONParser
 from rest_framework.pagination import PageNumberPagination
-
-from drf_yasg.utils import swagger_auto_schema
 
 from djoser.views import UserViewSet as DjoserUserViewSet
 
@@ -40,56 +36,7 @@ from .serializers import (
 )
 
 
-@method_decorator(
-    name="retrieve",
-    decorator=swagger_auto_schema(
-        operation_id="GetUser",
-        operation_description="Получение пользователя с указанным `id`",
-    ),
-)
-@method_decorator(
-    name="list",
-    decorator=swagger_auto_schema(
-        operation_id="GetUsersList",
-        operation_description="Получение списка пользователей",
-    ),
-)
-@method_decorator(
-    name="create",
-    decorator=swagger_auto_schema(
-        operation_id="CreateUser", operation_description="Создание пользователя"
-    ),
-)
-@method_decorator(name="destroy", decorator=swagger_auto_schema(auto_schema=None))
-@method_decorator(name="update", decorator=swagger_auto_schema(auto_schema=None))
-@method_decorator(
-    name="partial_update", decorator=swagger_auto_schema(auto_schema=None)
-)
-@method_decorator(name="set_password", decorator=swagger_auto_schema(auto_schema=None))
-@method_decorator(name="set_username", decorator=swagger_auto_schema(auto_schema=None))
-@method_decorator(name="activation", decorator=swagger_auto_schema(auto_schema=None))
-@method_decorator(
-    name="resend_activation", decorator=swagger_auto_schema(auto_schema=None)
-)
-@method_decorator(
-    name="reset_username", decorator=swagger_auto_schema(auto_schema=None)
-)
-@method_decorator(
-    name="reset_password", decorator=swagger_auto_schema(auto_schema=None)
-)
-@method_decorator(
-    name="reset_password_confirm", decorator=swagger_auto_schema(auto_schema=None)
-)
-@method_decorator(
-    name="reset_username_confirm", decorator=swagger_auto_schema(auto_schema=None)
-)
 class UserViewSet(DjoserUserViewSet):
-    @swagger_auto_schema(
-        method="post",
-        operation_id="CreateUserLike",
-        operation_description="Создание оценки пользователя",
-        request_body=None,
-    )
     @action(
         detail=True,
         methods=["post"],
@@ -109,14 +56,12 @@ class UserViewSet(DjoserUserViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema(operation_id="GetUserForLike")
     @action(
         detail=False,
         methods=["get"],
         url_name="me/likes",
         url_path="me/likes",
         serializer_class=UserSerializer,
-        pagination_class=PageNumberPagination,
     )
     def me_likes(self, request, *args, **kwargs):
         """
@@ -133,7 +78,6 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(operation_id="GetMyProjects")
     @action(
         detail=False,
         methods=["get"],
@@ -149,7 +93,6 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(projects, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(operation_id="GetMyOffers")
     @action(
         detail=False,
         methods=["get"],
@@ -165,7 +108,6 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(offers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(operation_id="GetMyLikes")
     @action(
         detail=False,
         url_name="me/likes/to",
@@ -181,7 +123,6 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(operation_id="GetMeLikes")
     @action(
         detail=False,
         url_name="me/likes/from",
@@ -197,7 +138,6 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(operation_id="GetMyProjectLikes")
     @action(
         detail=False,
         url_name="me/likes/projects",
@@ -213,7 +153,6 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(operation_id="GetMeProjectLikes")
     @action(
         detail=False,
         url_name="me/projects/likes",
@@ -230,7 +169,6 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(likes, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(operation_id="CreateSubscribe")
     @action(
         detail=True,
         methods=["post"],
@@ -253,7 +191,6 @@ class UserViewSet(DjoserUserViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema(operation_id="GetMySubscribers")
     @action(
         detail=False,
         url_name="me/subscribers/",
@@ -269,7 +206,6 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(subscribers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(operation_id="GetMeSubscriptions")
     @action(
         detail=False,
         url_name="me/subscriptions/",
@@ -285,30 +221,10 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(subscriptions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(method="put", auto_schema=None)
-    @swagger_auto_schema(
-        method="patch",
-        operation_id="UpdateCurrentUser",
-        operation_description="Обновление текущего пользователя",
-    )
-    @swagger_auto_schema(
-        method="get",
-        operation_id="GetCurrentUser",
-        operation_description="Получение текущего пользователя",
-    )
-    @swagger_auto_schema(
-        method="delete",
-        operation_id="DeleteCurrentUser",
-        operation_description="Удаление текущего пользователя",
-    )
     @action(["get", "put", "patch", "delete"], detail=False)
     def me(self, request, *args, **kwargs):
         return super().me(request, *args, **kwargs)
 
-    @swagger_auto_schema(
-        operation_id="GetUserDetail",
-        operation_description="Получение детальной информации пользователя с `id`",
-    )
     @action(
         detail=True,
         url_name="detail",
@@ -319,10 +235,6 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(self.get_object())
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(
-        operation_id="ValidateUserData",
-        operation_description="Предварительная валидация данных пользователя",
-    )
     @action(
         detail=False,
         methods=["post"],
@@ -380,7 +292,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
             self.permission_classes = [AllowAny]
         return super().get_permissions()
 
-    @swagger_auto_schema(operation_id="GetListProjects")
     def list(self, request, *args, **kwargs):
         """
         Получение списка всех проектов
@@ -392,7 +303,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(projects, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(operation_id="GetProject")
     def retrieve(self, request, pk):
         """
         Получение проекта с указанным `pk`
@@ -404,7 +314,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(operation_id="UpdateProject")
     def partial_update(self, request, pk):
         """
         Обновление проекта с указанным `pk`
@@ -417,9 +326,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema(
-        operation_id="CreateProject", request_body=ProjectCreateSerializer
-    )
     def create(self, request, *args, **kwargs):
         """
         Создание проекта
@@ -435,7 +341,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema(operation_id="DeleteProject")
     def destroy(self, request, pk):
         """
         Удаление проекта с указанным `pk`
@@ -444,7 +349,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @swagger_auto_schema(operation_id="GetProjectDetail")
     @action(
         detail=True,
         url_name="detail",
@@ -459,7 +363,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(operation_id="CreateProjectLike")
     @action(
         detail=True,
         methods=["post"],
@@ -483,7 +386,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema(operation_id="CreateProjectComment")
     @action(
         detail=True,
         methods=["post"],
@@ -527,7 +429,6 @@ class ProjectViewSet(viewsets.GenericViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema(operation_id="CreateProjectOffer")
     @action(
         detail=True,
         methods=["post"],
@@ -574,7 +475,6 @@ class CallbackAPIView(CreateAPIView):
 class CategoryAPIView(ListAPIView):
     queryset = Category.objects.all()
 
-    @swagger_auto_schema(operation_id="GetListCategories")
     def get(self, request, *args, **kwargs):
         """
         Получение списка всех категорий
