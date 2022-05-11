@@ -22,7 +22,7 @@ security:
 paths:
   /auth/token/login/:
     post:
-      operationId: auth_token_login_create
+      operationId: TokenLogin
       description: Use this endpoint to obtain user authentication token.
       parameters:
         - name: data
@@ -40,7 +40,7 @@ paths:
     parameters: []
   /auth/token/logout/:
     post:
-      operationId: auth_token_logout_create
+      operationId: GokenLogout
       description: Use this endpoint to logout user (remove user authentication token).
       parameters: []
       responses:
@@ -140,11 +140,6 @@ paths:
         - name: page
           in: query
           description: A page number within the paginated result set.
-          required: false
-          type: integer
-        - name: page_size
-          in: query
-          description: Number of results to return per page.
           required: false
           type: integer
       responses:
