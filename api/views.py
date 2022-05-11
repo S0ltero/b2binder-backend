@@ -36,7 +36,13 @@ from .serializers import (
 )
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10
+
+
 class UserViewSet(DjoserUserViewSet):
+    pagination_class = StandardResultsSetPagination
+
     @action(
         detail=True,
         methods=["post"],
