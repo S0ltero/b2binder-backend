@@ -15,12 +15,11 @@ urlpatterns = [
     path("api/", include("api.urls")),
     path("api/auth/", include(router.urls)),
     path("api/auth/", include("djoser.urls.authtoken")),
-    path("chat/", include("chat.urls")),
     path(
         "docs/",
         login_required(
             TemplateView.as_view(
-                template_name="elements.html",
+                template_name="docs.html",
             )
         )
     )
