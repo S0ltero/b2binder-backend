@@ -16,6 +16,11 @@ services:
       - media_volume:/home/app/mediafiles
     env_file:
       - ./.env
+    healthcheck:
+      test: curl --fail http://localhost:8000/healthcheck/ || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
     extra_hosts:
       - "host.docker.internal:host-gateway"
   web:
@@ -33,6 +38,11 @@ services:
       - media_volume:/home/app/mediafiles
     env_file:
       - ./.env
+    healthcheck:
+      test: curl --fail http://localhost:8001/healthcheck/ || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
     extra_hosts:
       - "host.docker.internal:host-gateway"
   nginx:
@@ -43,6 +53,11 @@ services:
       - ./nginx/:/etc/nginx/conf.d/
     ports:
       - 8001:80
+    depends_on:
+      ws:
+        condition: service_healthy
+      web:
+        condition: service_healthy
   redis:
     image: redis:alpine
 
