@@ -127,6 +127,7 @@ class Project(models.Model):
     categories = models.ManyToManyField(
         Category, verbose_name="Категории", related_name="projects", blank=True
     )
+    start_ivestments = models.IntegerField(verbose_name="Уже собрано", default=0)
 
     class Meta:
         verbose_name = "Проект"
