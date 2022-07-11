@@ -103,6 +103,12 @@ class Category(models.Model):
 
 
 class Project(models.Model):
+    class Type(models.TextChoices):
+        VENTURE = "VENTRUE", "Венчурная сделка"
+        COLLECTIVE = "COLLECTIVE", "Коллективная сделка"
+        JOINT = "JOINT", "Совместные инвестиции"
+        SALE = "SALE", "Продажа доли"
+
     user = models.ForeignKey(
         CustomUser,
         related_name="projects",
