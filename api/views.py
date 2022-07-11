@@ -303,10 +303,13 @@ class ProjectViewSet(viewsets.GenericViewSet):
         """
         Получение списка всех проектов
         """
-        try:
-            projects = self.get_queryset()
-        except Project.DoesNotExist:
-            return Response(f"Проекты не найдены", status=status.HTTP_404_NOT_FOUND)
+        projects = self.get_queryset()
+
+        page = self.paginate_queryset(projects)
+        if page:
+            serializer = self.serializer_class(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
         serializer = self.serializer_class(projects, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
