@@ -317,10 +317,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         """
         Получение проекта с указанным `pk`
         """
-        try:
-            project = self.queryset.objects.get(id=pk)
-        except Project.DoesNotExist:
-            return Response(f"Проект {pk} не найден", status=status.HTTP_404_NOT_FOUND)
+        project = self.get_object()
         serializer = self.serializer_class(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
