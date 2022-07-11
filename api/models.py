@@ -115,6 +115,7 @@ class Project(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Пользователь",
     )
+    type = models.CharField(verbose_name="Тип проекта", max_length=100, choices=Type.choices)
     title = models.CharField(verbose_name="Название проекта", max_length=100)
     description = models.TextField(verbose_name="Описание проекта")
     short_description = models.CharField(
