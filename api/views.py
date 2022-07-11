@@ -268,6 +268,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
     queryset = Project
     serializer_class = ProjectSerializer
     permission_classes = (AllowAny,)
+    pagination_class = StandardResultsSetPagination
     parser_classes = (MultiPartParser,)
 
     def get_queryset(self):
