@@ -122,6 +122,7 @@ class Project(models.Model):
         verbose_name="Краткое описание", max_length=255
     )
     image = models.ImageField(verbose_name="Изображение проекта", blank=True, null=True)
+    presentation = models.FileField(verbose_name="Презентация", blank=True, null=True)
     investments = models.IntegerField(verbose_name="Инвестиции")
     profit = models.IntegerField(verbose_name="Доход")
     categories = models.ManyToManyField(
