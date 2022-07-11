@@ -128,6 +128,8 @@ class Project(models.Model):
         Category, verbose_name="Категории", related_name="projects", blank=True
     )
     start_ivestments = models.IntegerField(verbose_name="Уже собрано", default=0)
+    start_date = models.DateField(verbose_name="Начало срока действия", null=True)
+    end_date = models.DateField(verbose_name="Завершение срока действия", null=True)
 
     class Meta:
         verbose_name = "Проект"
