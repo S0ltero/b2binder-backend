@@ -58,6 +58,9 @@ LOGIN_REDIRECT_URL = "/admin/login"
 LOGIN_URL = "/admin/login"
 AUTH_USER_MODEL = "api.CustomUser"
 
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
