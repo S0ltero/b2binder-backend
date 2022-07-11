@@ -81,7 +81,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_current_investments(self, obj):
         current_investments = obj.offers.aggregate(Sum("amount", default=0))["amount__sum"]
-        current_investments += obj.current_investments
+        current_investments += obj.start_investments
         return current_investments
 
 
