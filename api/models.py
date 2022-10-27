@@ -2,6 +2,7 @@ from django.core import validators
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 from .managers import UserManager
 
@@ -61,6 +62,12 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.email}"
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.subscription_end_at = timezone.now() + timezone.timedelta(weeks=2)
+
+        super().save(*args, **kwargs)
 
 
 class Payment(models.Model):
