@@ -17,6 +17,7 @@ from .models import (
     Category,
     CustomUser,
     Callback,
+    Payment,
 )
 from .serializers import (
     ProjectSerializer,
