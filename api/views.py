@@ -229,10 +229,6 @@ class UserViewSet(DjoserUserViewSet):
         serializer = self.serializer_class(subscriptions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(["get", "put", "patch", "delete"], detail=False)
-    def me(self, request, *args, **kwargs):
-        return super().me(request, *args, **kwargs)
-
     @action(
         detail=True,
         url_name="detail",
