@@ -118,6 +118,7 @@ class UserViewSet(DjoserUserViewSet):
         serializer_class=UserLikeSerializer,
     )
     def likes(self, request, id=None):
+        """Add like to user with `id` from `request.user`"""
         data = request.data.copy()
         data["like_from"] = self.request.user.id
         data["like_to"] = id
@@ -138,9 +139,7 @@ class UserViewSet(DjoserUserViewSet):
         permission_classes=(HasSubscription,)
     )
     def me_likes(self, request, *args, **kwargs):
-        """
-        Получение списка пользователей для оценки
-        """
+        """Get list of users for likes"""
         liked_users = self.request.user.likes_to.values_list("id", flat=True)
         users = self.queryset.exclude(id__in=liked_users)
         users = users.exclude(id=request.user.id)
@@ -160,9 +159,7 @@ class UserViewSet(DjoserUserViewSet):
         serializer_class=ProjectSerializer
     )
     def projects(self, request, *args, **kwargs):
-        """
-        Получение списка моих проектов
-        """
+        """Get list of projects of `request.user`"""
         projects = request.user.projects.all()
         serializer = self.serializer_class(projects, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -176,9 +173,7 @@ class UserViewSet(DjoserUserViewSet):
         permission_classes=(HasSubscription,)
     )
     def offers(self, request, *args, **kwargs):
-        """
-        Получение списка моих предложений
-        """
+        """Get list of offers of `request.user`"""
         offers = request.user.offers.all()
         serializer = self.serializer_class(offers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -190,9 +185,7 @@ class UserViewSet(DjoserUserViewSet):
         serializer_class=UserSerializer,
     )
     def likes_to(self, request, *args, **kwargs):
-        """
-        Получение списка пользователей которых я оценил
-        """
+        """Get list of users that the `request.user` likes"""
         instance = self.request.user
         likes = instance.likes_to.all()
         serializer = self.serializer_class(likes, many=True)
@@ -205,9 +198,7 @@ class UserViewSet(DjoserUserViewSet):
         serializer_class=UserSerializer,
     )
     def likes_from(self, request, *args, **kwargs):
-        """
-        Получение списка пользователей оценивших меня
-        """
+        """Get list of users who likes `request.user`"""
         instance = self.request.user
         likes = instance.likes_from.all()
         serializer = self.serializer_class(likes, many=True)
@@ -220,9 +211,7 @@ class UserViewSet(DjoserUserViewSet):
         serializer_class=ProjectSerializer,
     )
     def like_projects(self, request, *args, **kwargs):
-        """
-        Получение списка оцененных мной проектов
-        """
+        """Get list of project that the `request.user` likes"""
         instance = self.request.user
         likes = instance.like_projects.all()
         serializer = self.serializer_class(likes, many=True)
@@ -235,9 +224,7 @@ class UserViewSet(DjoserUserViewSet):
         serializer_class=UserSerializer,
     )
     def projects_likes(self, request, *args, **kwargs):
-        """
-        Получение списка пользователей оценивших мои проекты
-        """
+        """Get list of user who likes projects of `request.user`"""
         instance = self.request.user
         user_ids = instance.projects.values_list("likes", flat=True)
         likes = CustomUser.objects.filter(id__in=user_ids)
@@ -252,9 +239,7 @@ class UserViewSet(DjoserUserViewSet):
         serializer_class=UserSubscribeSerializer,
     )
     def subscribe(self, request, id=None):
-        """
-        Добавление подписки на пользователя с `id`
-        """
+        """Create subscribe to user with `id` from `request.user`"""
         data = request.data.copy()
         data["subscriber"] = self.request.user.id
         data["subscription"] = id
@@ -273,9 +258,7 @@ class UserViewSet(DjoserUserViewSet):
         serializer_class=UserSerializer,
     )
     def subscribers(self, request, *args, **kwargs):
-        """
-        Получение списка моих подписчиков
-        """
+        """Get list of users who subscribes to `request.user`"""
         instance = self.request.user
         subscribers = instance.subscribers.all()
         serializer = self.serializer_class(subscribers, many=True)
@@ -288,9 +271,7 @@ class UserViewSet(DjoserUserViewSet):
         serializer_class=UserSerializer,
     )
     def subscriptions(self, request, *args, **kwargs):
-        """
-        Получение списка моих подписок
-        """
+        """Get list of subscriptions of `request.user`"""
         instance = self.request.user
         subscriptions = instance.subscriptions.all()
         serializer = self.serializer_class(subscriptions, many=True)
@@ -304,6 +285,7 @@ class UserViewSet(DjoserUserViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def qdetail(self, request, id=None):
+        """Get detail info about user with `id`"""
         serializer = self.serializer_class(self.get_object())
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -316,6 +298,10 @@ class UserViewSet(DjoserUserViewSet):
         permission_classes=(AllowAny,),
     )
     def validate(self, request):
+        """
+        Validate incoming registration data before real registration
+        Used for multi-step registration
+        """
         fields = request.data.keys()
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=False):
@@ -337,6 +323,7 @@ class UserViewSet(DjoserUserViewSet):
         serializer_class=UserDetailSerializer
     )
     def payment(self, request, *args, **kwargs):
+        """Create payment url for `request.user`"""
         response = create_payment(user=request.user, value=500)
         return Response({"payment_url": response.confirmation.confirmation_url}, status=status.HTTP_200_OK)
 
@@ -393,17 +380,13 @@ class ProjectViewSet(viewsets.GenericViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk):
-        """
-        Получение проекта с указанным `pk`
-        """
+        """Get project with `pk`"""
         project = self.get_object()
         serializer = self.serializer_class(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def partial_update(self, request, pk):
-        """
-        Обновление проекта с указанным `pk`
-        """
+        """Partial update project with `pk`"""
         project = self.get_object()
         serializer = self.serializer_class(project, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=False):
@@ -413,9 +396,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def create(self, request, *args, **kwargs):
-        """
-        Создание проекта
-        """
+        """Create project by `request.data`"""
         data = request.data.copy()
         data["user"] = request.user.id
 
@@ -428,9 +409,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk):
-        """
-        Удаление проекта с указанным `pk`
-        """
+        """Delete project with `pk`"""
         project = self.get_object()
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -442,9 +421,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         serializer_class=ProjectDetailSerializer,
     )
     def project_detail(self, request, pk=None):
-        """
-        Получение детальной информации о проекте с указанным `pk`
-        """
+        """Get detail info about project with `pk`"""
         project = self.get_object()
         serializer = self.serializer_class(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -458,9 +435,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         parser_classes=(JSONParser,),
     )
     def project_likes(self, request, pk=None):
-        """
-        Добавление оценки от пользователя `request.user` к проекту с указанным `pk`
-        """
+        """Add like to project with `pk` from `request.user`"""
         data = request.data.copy()
         data["project"] = pk
         data["user"] = self.request.user.id
@@ -481,9 +456,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         parser_classes=(JSONParser,),
     )
     def comments(self, request, pk=None):
-        """
-        Добавление комментария от пользователя `request.user` к проекту с указанным `pk`
-        """
+        """Add comment to project with `pk` from `request.user`"""
         data = request.data.copy()
         data["project"] = pk
         data["user"] = self.request.user.id
@@ -504,6 +477,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         parser_classes=(JSONParser,),
     )
     def news(self, request, pk=None):
+        """Add new to project with `pk` from `request.user`"""
         data = request.data.copy()
         data["project"] = pk
         data["user"] = self.request.user.id
@@ -524,9 +498,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
         parser_classes=(JSONParser,),
     )
     def offers(self, request, pk=None):
-        """
-        Добавление предложения от пользователя `request.user` к проекту с указанным `pk`
-        """
+        """Add offer to project with `pk` from `request.user`"""
         data = request.data.copy()
         data["user"] = self.request.user.id
         data["project"] = pk
@@ -540,9 +512,7 @@ class ProjectViewSet(viewsets.GenericViewSet):
 
 
 class CallbackAPIView(CreateAPIView):
-    """
-    Добавление обратной связи
-    """
+    """APIView for callback form"""
 
     queryset = Callback.objects.all()
     serializer_class = CallbackCreateSerializer
@@ -562,8 +532,6 @@ class CategoryAPIView(ListAPIView):
     queryset = Category.objects.all()
 
     def get(self, request, *args, **kwargs):
-        """
-        Получение списка всех категорий
-        """
+        """Get list of categories"""
         categories = self.queryset.values_list("name")
         return Response(categories, status=status.HTTP_200_OK)
