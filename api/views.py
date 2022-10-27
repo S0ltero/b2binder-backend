@@ -294,6 +294,8 @@ class ProjectViewSet(viewsets.GenericViewSet):
             self.permission_classes = [IsAuthenticated]
         elif self.action in ["update", "destroy"]:
             self.permission_classes = [IsAuthenticated, IsOwner]
+        elif self.action in ["list", "retrieve", "detail", "likes", "comments", "news", "offers"]:
+            self.permission_classes = [HasSubscription]
         else:
             self.permission_classes = [AllowAny]
         return super().get_permissions()
