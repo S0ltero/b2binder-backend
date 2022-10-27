@@ -35,6 +35,7 @@ from .serializers import (
     ProjectCommentSerializer,
     UserSubscribeSerializer,
 )
+from .payment import create_payment
 
 
 class StandardResultsSetPagination(PageNumberPagination):
