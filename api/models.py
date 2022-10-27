@@ -59,6 +59,20 @@ class CustomUser(AbstractUser):
         return f"{self.email}"
 
 
+class Payment(models.Model):
+
+    class Status(models.TextChoices):
+        SUCCEEDED = "SUCCEEDED", "Успешно"
+        CANCELED = "CANCELED", "Отменено"
+        REFUNDED = "REFUNDED", "Отозвано"
+
+    user = models.ForeignKey(CustomUser, related_name="payments", on_delete=models.CASCADE)
+    payment_id = models.TextField(verbose_name="id транзакции")
+    created_at = models.DateTimeField(verbose_name="Дата создания")
+    amount = models.FloatField(verbose_name="Сумма")
+    status = models.CharField(verbose_name="Статус", choices=Status.choices, max_length=100)
+
+
 class UserLike(models.Model):
     like_to = models.ForeignKey(CustomUser, related_name="+", on_delete=models.CASCADE)
     like_from = models.ForeignKey(
