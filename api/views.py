@@ -1,7 +1,10 @@
 from collections import OrderedDict
 
+from django.utils import timezone
+
 from rest_framework import viewsets
 from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
@@ -10,6 +13,8 @@ from rest_framework.parsers import MultiPartParser, JSONParser
 from rest_framework.pagination import PageNumberPagination
 
 from djoser.views import UserViewSet as DjoserUserViewSet
+from yookassa.domain.notification import WebhookNotification, WebhookNotificationEventType
+from yookassa.domain.common import SecurityHelper
 
 from .permissions import IsOwner, HasSubscription
 from .models import (
@@ -40,6 +45,66 @@ from .payment import create_payment
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
+
+
+class PaymentView(APIView):
+
+    def post(self, request):
+        # Check if ip address in trusted origins
+        ip = request.META.get("REMOTE_ADDR")
+        if not SecurityHelper().is_ip_trusted(ip):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if request.data object is valid
+        try:
+            notification = WebhookNotification(request.body)
+        except Exception:
+            pass
+
+        # Check if user from payment metadata exists
+        try:
+            user = CustomUser.objects.get(pk=notification.object.metadata.get("userId"))
+        except CustomUser.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        # Get or create payment object by payment id
+        payment, _ = Payment.objects.get_or_create(
+            payment_id=notification.object.id,
+            defaults={
+                "user": user
+            }
+        )
+
+        if notification.object.amount == 500:
+            timedelta = timezone.timedelta(days=30)
+        elif notification.object.amount == 700:
+            timedelta = timezone.timedelta(days=60)
+
+        if notification.event == WebhookNotificationEventType.PAYMENT_SUCCEEDED:
+            # Update user subscription status
+            user.subscription_end_at += timedelta
+            user.has_subscribe = True
+            user.save()
+
+            # Update Payment object
+            payment.status = Payment.Status.SUCCEEDED
+            payment.save()
+        elif notification.event == WebhookNotificationEventType.PAYOUT_CANCELED:
+            # Update Payment object
+            payment.status = Payment.Status.SUCCEEDED
+            payment.save()
+        elif notification.event == WebhookNotificationEventType.REFUND_SUCCEEDED:
+            # Update user subscription status
+            user.subscription_end_at -= timedelta
+            if user.subscription_end_at < timezone.now():
+                user.has_subscribe = False
+            user.save()
+
+            # Update Payment object
+            payment.status = Payment.Status.REFUNDED
+            payment.save()
+
+        return Response(status=status.HTTP_200_OK)
 
 
 class UserViewSet(DjoserUserViewSet):
