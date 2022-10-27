@@ -105,7 +105,8 @@ class UserViewSet(DjoserUserViewSet):
         methods=["get"],
         url_name="me/offers",
         url_path="me/offers",
-        serializer_class=ProjectOfferSerializer
+        serializer_class=ProjectOfferSerializer,
+        permission_classes=[HasSubscription]
     )
     def offers(self, request, *args, **kwargs):
         """
