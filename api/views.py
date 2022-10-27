@@ -11,7 +11,7 @@ from rest_framework.pagination import PageNumberPagination
 
 from djoser.views import UserViewSet as DjoserUserViewSet
 
-from .permissions import IsOwner
+from .permissions import IsOwner, HasSubscription
 from .models import (
     Project,
     Category,
