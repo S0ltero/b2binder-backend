@@ -329,6 +329,17 @@ class UserViewSet(DjoserUserViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(
+        detail=False,
+        methods=["post"],
+        url_name="me/payment",
+        url_path="me/payment", 
+        serializer_class=UserDetailSerializer
+    )
+    def payment(self, request, *args, **kwargs):
+        response = create_payment(user=request.user, value=500)
+        return Response({"payment_url": response.confirmation.confirmation_url}, status=status.HTTP_200_OK)
+
 
 class ProjectViewSet(viewsets.GenericViewSet):
     queryset = Project
