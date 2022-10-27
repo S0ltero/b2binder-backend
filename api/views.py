@@ -233,7 +233,8 @@ class UserViewSet(DjoserUserViewSet):
         detail=True,
         url_name="detail",
         url_path="detail", 
-        serializer_class=UserDetailSerializer
+        serializer_class=UserDetailSerializer,
+        permission_classes=(IsAuthenticated,)
     )
     def qdetail(self, request, id=None):
         serializer = self.serializer_class(self.get_object())
