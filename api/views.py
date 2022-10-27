@@ -68,6 +68,7 @@ class UserViewSet(DjoserUserViewSet):
         url_name="me/likes",
         url_path="me/likes",
         serializer_class=UserSerializer,
+        permission_classes=[HasSubscription]
     )
     def me_likes(self, request, *args, **kwargs):
         """
