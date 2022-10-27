@@ -45,6 +45,10 @@ class CustomUser(AbstractUser):
     )
 
     online = models.BooleanField(verbose_name="Статус", default=False)
+    has_subscription = models.BooleanField(verbose_name="Оплачена подписка?", default=True)
+    subscription_end_at = models.DateTimeField(
+        verbose_name="Подписка заканчивается в", null=True, blank=True
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ()
