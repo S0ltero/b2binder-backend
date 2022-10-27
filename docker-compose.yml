@@ -51,6 +51,8 @@ services:
       - static_volume:/app/web/staticfiles
       - media_volume:/app/web/mediafiles
       - ./nginx/:/etc/nginx/conf.d/
+      - ./docs/openapi-schema.yml:/app/web/docs/openapi-schema.yml
+      - ./docs/docs.html:/app/web/docs/docs.html
     ports:
       - 8001:80
     depends_on:
